@@ -29,7 +29,7 @@
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
-                headers: { 'RequestVerificationToken': token(), 'X-Requested-With': 'XMLHttpRequest' }
+                headers: { 'X-CSRF-TOKEN': token(), 'X-Requested-With': 'XMLHttpRequest' }
             });
 
             const data = await response.json();
@@ -61,7 +61,7 @@
             const response = await fetch('/api/wishlist/toggle', {
                 method: 'POST',
                 body: formData,
-                headers: { 'RequestVerificationToken': token(), 'X-Requested-With': 'XMLHttpRequest' }
+                headers: { 'X-CSRF-TOKEN': token(), 'X-Requested-With': 'XMLHttpRequest' }
             });
 
             const data = await response.json();
@@ -109,7 +109,7 @@
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
-                headers: { 'RequestVerificationToken': token(), 'X-Requested-With': 'XMLHttpRequest' }
+                headers: { 'X-CSRF-TOKEN': token(), 'X-Requested-With': 'XMLHttpRequest' }
             });
 
             if (response.redirected) {

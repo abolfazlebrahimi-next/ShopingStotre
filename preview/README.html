@@ -22,6 +22,15 @@
             <li><a href="checkout.html">تکمیل خرید و درگاه پرداخت شبیه‌سازی‌شده</a></li>
             <li><a href="admin.html">داشبورد پنل مدیریت (آمار، نمودار فروش، جداول)</a></li>
         </ul>
+        <div class="card" style="margin-top:1rem">
+            <h2 style="font-size:1.05rem">نمایش پیش‌نمایش</h2>
+            <p>
+                این صفحه‌ها به CSS و فونت واقعی پروژه دات‌نت (مسیر نسبی <code dir="ltr">../src/ShopingStore.Web/wwwroot/</code>)
+                لینک می‌شوند، پس باید از <strong>ریشه مخزن</strong> سرو شوند. ساده‌ترین راه:
+            </p>
+            <pre dir="ltr" style="background:#0f172a;color:#e2e8f0;padding:.75rem;border-radius:8px;overflow:auto"><code>python3 -m http.server 8000</code></pre>
+            <p>سپس آدرس <code dir="ltr">http://localhost:8000/preview/index.html</code> را باز کنید.</p>
+        </div>
         <div class="toast toast--info">
             نکته: برای دیدن نسخه واقعی و تعاملی، پروژه را با <code dir="ltr">dotnet run --project src/ShopingStore.Web</code> اجرا کنید
             (راهنمای کامل در <code>README.md</code>).

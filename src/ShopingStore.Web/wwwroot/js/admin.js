@@ -44,7 +44,7 @@
             const response = await fetch(window.location.pathname + '?handler=UploadImage', {
                 method: 'POST',
                 body: formData,
-                headers: { 'RequestVerificationToken': token ? token.value : '' }
+                headers: { 'X-CSRF-TOKEN': token ? token.value : '' }
             });
 
             const data = await response.json();
