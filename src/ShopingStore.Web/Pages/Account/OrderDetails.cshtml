@@ -1,0 +1,129 @@
+@page "/account/orders/{id:int}"
+@model ShopingStore.Web.Pages.Account.OrderDetailsModel
+@{
+    ViewData["Title"] = $"سفارش {Model.Order.OrderNumber}";
+    var order = Model.Order;
+}
+
+<div class="account-layout">
+    <partial name="_AccountNav" />
+
+    <div>
+        <div class="card mb-2">
+            <div class="flex-between">
+                <div>
+                    <h1 style="font-size:1.05rem;margin:0">سفارش @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.OrderNumber)</h1>
+                    <p class="muted" style="font-size:.83rem;margin:.2rem 0 0">
+                        ثبت شده در @ShopingStore.Domain.Common.PersianDate.ToPersianDateTime(order.CreatedAtUtc)
+                        — @order.Items.Count قلم کالا
+                    </p>
+                </div>
+                <div class="flex">
+                    <span class="status status--@order.Status.ToCssClass()">@order.Status.ToPersianTitle()</span>
+                    <a class="btn btn--ghost btn--sm" href="/account/orders">بازگشت</a>
+                </div>
+            </div>
+
+            @if (order.Status is OrderStatus.Pending or OrderStatus.Processing)
+            {
+                <form method="post" asp-page-handler="Cancel" class="mt-2" data-confirm="آیا از لغو این سفارش مطمئن هستید؟">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@order.Id" />
+                    <button type="submit" class="btn btn--danger btn--sm">لغو سفارش</button>
+                </form>
+            }
+        </div>
+
+        <div class="grid-2 mb-2">
+            <div class="card">
+                <h3 style="font-size:.95rem">اطلاعات گیرنده</h3>
+                <p class="muted" style="font-size:.86rem;margin:0">
+                    @order.CustomerName<br />
+                    @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.CustomerPhone)<br />
+                    @order.FullAddress
+                </p>
+            </div>
+            <div class="card">
+                <h3 style="font-size:.95rem">پرداخت و ارسال</h3>
+                <p class="muted" style="font-size:.86rem;margin:0">
+                    شیوه پرداخت: @order.PaymentMethod.ToPersianTitle()<br />
+                    وضعیت پرداخت: @order.PaymentStatus.ToPersianTitle()
+                    @if (order.PaymentReference is not null)
+                    {
+                        <span><br />شناسه پرداخت: @order.PaymentReference</span>
+                    }
+                    @if (order.TrackingCode is not null)
+                    {
+                        <span><br />کد رهگیری مرسوله: @order.TrackingCode</span>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div class="card mb-2">
+            <h3 style="font-size:.95rem">اقلام سفارش</h3>
+            <div class="table-wrap">
+                <table class="data">
+                    <thead><tr><th>کالا</th><th>قیمت واحد</th><th>تعداد</th><th>جمع</th></tr></thead>
+                    <tbody>
+                    @foreach (var item in order.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="cart-item">
+                                    <img src="@item.ProductImageUrl" alt="@item.ProductName" />
+                                    <div>
+                                        <a href="/product/@item.ProductSlug">@item.ProductName</a>
+                                        @if (item.VariantSelection is not null)
+                                        {
+                                            <div class="muted" style="font-size:.78rem">@item.VariantSelection</div>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.UnitPrice)</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(item.Quantity.ToString())</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.LineTotal)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <ul class="summary-list mt-2" style="max-width:420px">
+                <li><span>جمع کالاها</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Subtotal)</span></li>
+                @if (order.DiscountAmount > 0)
+                {
+                    <li><span>تخفیف</span><span>- @ShopingStore.Domain.Common.PersianDate.ToPrice(order.DiscountAmount)</span></li>
+                }
+                <li><span>ارسال</span><span>@(order.ShippingCost == 0 ? "رایگان" : ShopingStore.Domain.Common.PersianDate.ToPrice(order.ShippingCost))</span></li>
+                <li><span>مالیات</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.TaxAmount)</span></li>
+                <li class="total"><span>مبلغ کل</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Total)</span></li>
+            </ul>
+        </div>
+
+        @if (order.History.Count > 0)
+        {
+            <div class="card">
+                <h3 style="font-size:.95rem">تاریخچه وضعیت سفارش</h3>
+                <table class="spec-table">
+                    <tbody>
+                    @foreach (var history in order.History)
+                    {
+                        <tr>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDateTime(history.CreatedAtUtc)</td>
+                            <td>
+                                <span class="status status--@history.Status.ToCssClass()">@history.Status.ToPersianTitle()</span>
+                                @if (history.Note is not null)
+                                {
+                                    <span class="muted" style="font-size:.8rem"> — @history.Note</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

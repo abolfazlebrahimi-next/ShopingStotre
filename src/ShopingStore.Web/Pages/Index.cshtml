@@ -1,0 +1,142 @@
+@page "/"
+@model ShopingStore.Web.Pages.IndexModel
+@{
+    ViewData["Title"] = null;
+    ViewData["Description"] = Model.Home.Categories.Count > 0
+        ? $"خرید آنلاین {string.Join("، ", Model.Home.Categories.Take(3).Select(c => c.Name))} با ارسال سریع"
+        : "فروشگاه اینترنتی";
+}
+
+<section class="hero">
+    <div>
+        <h1>خرید آنلاین، ساده و مطمئن 🛍️</h1>
+        <p>
+            بیش از @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.Home.ProductsCount.ToString())
+            کالای اصل با ضمانت اصالت و بازگشت ۷ روزه. ارسال سریع به سراسر ایران و پرداخت امن.
+        </p>
+        <div class="flex mt-2">
+            <a class="btn btn--primary" href="/products">مشاهده فروشگاه</a>
+            <a class="btn btn--outline" href="/products?onlyDiscounted=true" style="background:#fff1; color:#fff; border-color:#fff8">تخفیف‌های ویژه</a>
+        </div>
+        <div class="hero__features">
+            <span>🚚 ارسال سریع</span>
+            <span>🔒 پرداخت امن</span>
+            <span>↩️ ۷ روز ضمانت بازگشت</span>
+            <span>☎️ پشتیبانی ۲۴ ساعته</span>
+        </div>
+    </div>
+    <div class="hero__visual" aria-hidden="true">
+        <div>📱 موبایل و تبلت با گارانتی شرکتی</div>
+        <div>💻 لپ‌تاپ و لوازم جانبی اورجینال</div>
+        <div>🎧 هدفون و اسپیکر با کیفیت استودیویی</div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section__head">
+        <h2>🗂️ دسته‌بندی‌ها</h2>
+        <a href="/products">همه محصولات</a>
+    </div>
+    <div class="category-grid">
+        @foreach (var category in Model.Home.Categories)
+        {
+            var icon = category.Icon switch
+            {
+                "mobile" => "📱",
+                "laptop" => "💻",
+                "headphone" => "🎧",
+                "watch" => "⌚",
+                "home" => "🏠",
+                "shirt" => "👕",
+                "sparkle" => "💎",
+                "ball" => "⚽",
+                _ => "🛍️"
+            };
+
+            <a class="category-card" href="/category/@category.Slug">
+                <div class="category-card__icon">@icon</div>
+                <strong>@category.Name</strong>
+                <small>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(category.ProductsCount.ToString()) کالا</small>
+            </a>
+        }
+    </div>
+</section>
+
+@if (Model.Home.DiscountedProducts.Count > 0)
+{
+    <section class="section">
+        <div class="section__head">
+            <h2>🔥 پیشنهادهای شگفت‌انگیز</h2>
+            <a href="/products?onlyDiscounted=true">مشاهده همه تخفیف‌ها</a>
+        </div>
+        <div class="product-grid">
+            @foreach (var product in Model.Home.DiscountedProducts)
+            {
+                <partial name="_ProductCard" model="product" />
+            }
+        </div>
+    </section>
+}
+
+<section class="section">
+    <div class="section__head">
+        <h2>⭐ منتخب فروشگاه</h2>
+        <a href="/products?sortBy=TopRated">محبوب‌ترین‌ها</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var product in Model.Home.FeaturedProducts)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>
+
+<section class="section">
+    <div class="section__head">
+        <h2>🆕 جدیدترین محصولات</h2>
+        <a href="/products?sortBy=Newest">جدیدترین‌ها</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var product in Model.Home.NewestProducts)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>
+
+<section class="section">
+    <div class="section__head">
+        <h2>🏆 پرفروش‌ترین‌ها</h2>
+        <a href="/products?sortBy=BestSelling">پرفروش‌ترین‌ها</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var product in Model.Home.BestSellers)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>
+
+@if (Model.Home.LatestReviews.Count > 0)
+{
+    <section class="section">
+        <div class="section__head">
+            <h2>💬 نظر مشتریان</h2>
+        </div>
+        <div class="grid-2">
+            @foreach (var review in Model.Home.LatestReviews)
+            {
+                <div class="review">
+                    <div class="review__head">
+                        <span class="review__author">@review.AuthorName</span>
+                        <span class="rating">@string.Concat(Enumerable.Repeat("★", review.Rating))</span>
+                    </div>
+                    <p class="muted" style="margin:0">
+                        <a href="/product/@review.ProductSlug">@review.ProductName</a> — @review.Comment
+                    </p>
+                    <small class="muted">@ShopingStore.Domain.Common.PersianDate.ToRelative(review.CreatedAtUtc)</small>
+                </div>
+            }
+        </div>
+    </section>
+}

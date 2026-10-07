@@ -1,0 +1,56 @@
+@page "/payment/gateway"
+@model ShopingStore.Web.Pages.Payment.GatewayModel
+@{
+    ViewData["Title"] = "درگاه پرداخت";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>درگاه پرداخت شبیه‌ساز | @Model.OrderNumber</title>
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    <style>
+        body { background: #0f172a; display: grid; place-items: center; min-height: 100vh; }
+        .gateway { width: min(520px, 92vw); background: #fff; border-radius: 18px; padding: 1.6rem; }
+        .gateway__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+        .gateway__card { background: linear-gradient(120deg, #1e293b, #334155); color: #fff; border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+        .gateway__card small { opacity: .75; display: block; }
+        .gateway__amount { font-size: 1.6rem; font-weight: 700; }
+        .demo-note { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: .6rem .8rem; font-size: .82rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+<div class="gateway">
+    <div class="gateway__head">
+        <strong>🔒 درگاه پرداخت الکترونیک</strong>
+        <span class="muted">@Model.BankName</span>
+    </div>
+
+    <div class="demo-note">
+        این یک درگاه آزمایشی (شبیه‌ساز) است. در حالت واقعی، کاربر به صفحه بانک منتقل می‌شود و
+        پس از پرداخت با یک <code>Authority</code> به سایت بازمی‌گردد.
+    </div>
+
+    <div class="gateway__card">
+        <small>شماره سفارش</small>
+        <div>@Model.OrderNumber</div>
+        <small class="mt-2">مبلغ قابل پرداخت</small>
+        <div class="gateway__amount">@ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Amount)</div>
+    </div>
+
+    <form method="post" asp-page-handler="Pay">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="order" value="@Model.OrderNumber" />
+        <button type="submit" class="btn btn--success btn--block">پرداخت موفق</button>
+    </form>
+
+    <form method="post" asp-page-handler="Cancel" class="mt-1">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="order" value="@Model.OrderNumber" />
+        <button type="submit" class="btn btn--ghost btn--block">انصراف از پرداخت</button>
+    </form>
+</div>
+</body>
+</html>

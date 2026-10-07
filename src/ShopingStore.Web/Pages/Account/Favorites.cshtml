@@ -1,0 +1,31 @@
+@page "/account/favorites"
+@model ShopingStore.Web.Pages.Account.FavoritesModel
+@{
+    ViewData["Title"] = "علاقه‌مندی‌ها";
+}
+
+<div class="account-layout">
+    <partial name="_AccountNav" />
+
+    <div class="card">
+        <h1 style="font-size:1.1rem">کالاهای مورد علاقه من</h1>
+
+        @if (Model.Products.Count == 0)
+        {
+            <div class="empty-state">
+                <h3>لیست علاقه‌مندی‌های شما خالی است</h3>
+                <p>با کلیک روی آیکون قلب در هر محصول، آن را به این لیست اضافه کنید.</p>
+                <a class="btn btn--primary" href="/products">مشاهده محصولات</a>
+            </div>
+        }
+        else
+        {
+            <div class="product-grid">
+                @foreach (var product in Model.Products)
+                {
+                    <partial name="_ProductCard" model="product" />
+                }
+            </div>
+        }
+    </div>
+</div>

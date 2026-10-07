@@ -1,0 +1,68 @@
+@page "/admin/orders"
+@model ShopingStore.Web.Pages.Admin.Orders.IndexModel
+@{
+    ViewData["Title"] = "مدیریت سفارش‌ها";
+}
+
+<div class="card mb-3">
+    <form method="get" class="flex" style="flex-wrap:wrap">
+        <input type="search" name="search" value="@Model.Filter.Search" placeholder="شماره سفارش، نام یا تلفن مشتری..." style="max-width:320px" />
+        <select name="status" style="max-width:200px">
+            <option value="">همه وضعیت‌ها</option>
+            @foreach (var status in Enum.GetValues<OrderStatus>())
+            {
+                <option value="@status" selected="@(Model.Filter.Status == status)">@status.ToPersianTitle()</option>
+            }
+        </select>
+        <select name="paymentStatus" style="max-width:180px">
+            <option value="">همه پرداخت‌ها</option>
+            @foreach (var status in Enum.GetValues<PaymentStatus>())
+            {
+                <option value="@status" selected="@(Model.Filter.PaymentStatus == status)">@status.ToPersianTitle()</option>
+            }
+        </select>
+        <button type="submit" class="btn btn--primary">فیلتر</button>
+        <a href="/admin/orders" class="btn btn--ghost">حذف فیلتر</a>
+    </form>
+</div>
+
+<div class="stat-grid stat-grid--admin mb-3">
+    <div class="stat stat--admin"><small>مجموع سفارش‌ها</small><strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.Orders.TotalCount.ToString())</strong></div>
+    <div class="stat stat--admin"><small>در انتظار پرداخت</small><strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.Stats.PendingOrders.ToString())</strong></div>
+    <div class="stat stat--admin"><small>در حال پردازش</small><strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.Stats.ProcessingOrders.ToString())</strong></div>
+    <div class="stat stat--admin"><small>فروش امروز</small><strong>@ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Stats.TodayRevenue)</strong></div>
+</div>
+
+<div class="table-wrap">
+    <table class="data">
+        <thead>
+        <tr>
+            <th>شماره سفارش</th><th>مشتری</th><th>تلفن</th><th>تاریخ</th><th>مبلغ</th>
+            <th>وضعیت</th><th>پرداخت</th><th>شیوه</th><th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model.Orders.Items)
+        {
+            <tr>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.OrderNumber)</td>
+                <td>@order.CustomerName</td>
+                <td dir="ltr">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.CustomerPhone)</td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToShortPersian(order.CreatedAtUtc)</td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Total)</td>
+                <td><span class="status status--@order.Status.ToCssClass()">@order.Status.ToPersianTitle()</span></td>
+                <td><span class="status status--@(order.PaymentStatus == PaymentStatus.Paid ? "success" : "warning")">@order.PaymentStatus.ToPersianTitle()</span></td>
+                <td>@order.PaymentMethod.ToPersianTitle()</td>
+                <td><a class="btn btn--primary btn--sm" href="/admin/orders/@order.Id">مدیریت</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.Orders.Items.Count == 0)
+{
+    <div class="card empty-state mt-3"><h3>سفارشی با این مشخصات یافت نشد</h3></div>
+}
+
+<partial name="_Pagination" model="Model.Pagination" />

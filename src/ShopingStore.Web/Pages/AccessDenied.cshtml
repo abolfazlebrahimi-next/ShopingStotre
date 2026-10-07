@@ -1,0 +1,14 @@
+@page "/access-denied"
+@model ShopingStore.Web.Pages.AccessDeniedModel
+@{
+    ViewData["Title"] = "عدم دسترسی";
+}
+<div class="card text-center" style="max-width:560px;margin:2rem auto">
+    <div style="font-size:3rem">⛔</div>
+    <h1 style="font-size:1.3rem">دسترسی شما به این بخش مجاز نیست</h1>
+    <p class="muted">برای مشاهده این صفحه باید با حساب مدیریت یا پشتیبانی وارد شوید.</p>
+    <div class="flex" style="justify-content:center">
+        <a class="btn btn--primary" href="/account/login?returnUrl=/admin">ورود با حساب مدیریت</a>
+        <a class="btn btn--ghost" href="/">صفحه اصلی</a>
+    </div>
+</div>

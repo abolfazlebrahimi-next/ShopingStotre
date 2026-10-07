@@ -1,0 +1,54 @@
+@page "/admin/categories"
+@model ShopingStore.Web.Pages.Admin.Categories.IndexModel
+@{
+    ViewData["Title"] = "مدیریت دسته‌بندی‌ها";
+}
+
+<div class="flex-between mb-3">
+    <p class="muted" style="margin:0;font-size:.88rem">دسته‌بندی‌ها ساختار منوی فروشگاه و فیلتر محصولات را می‌سازند.</p>
+    <a href="/admin/categories/edit" class="btn btn--success">➕ افزودن دسته‌بندی</a>
+</div>
+
+<div class="table-wrap">
+    <table class="data">
+        <thead>
+        <tr><th>#</th><th>نام</th><th>نامک</th><th>والد</th><th>ترتیب</th><th>وضعیت</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var category in Model.Categories.OrderBy(c => c.SortOrder))
+        {
+            <tr>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(category.Id.ToString())</td>
+                <td>@category.Name</td>
+                <td dir="ltr">@category.Slug</td>
+                <td>
+                    @(category.ParentId is null
+                        ? "—"
+                        : Model.Categories.FirstOrDefault(c => c.Id == category.ParentId)?.Name ?? "—")
+                </td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(category.SortOrder.ToString())</td>
+                <td>
+                    @if (category.IsActive)
+                    {
+                        <span class="status status--success">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="status status--secondary">غیرفعال</span>
+                    }
+                </td>
+                <td>
+                    <div class="flex">
+                        <a class="btn btn--ghost btn--sm" href="/admin/categories/edit/@category.Id">ویرایش</a>
+                        <form method="post" asp-page-handler="Delete" data-confirm="این دسته‌بندی حذف شود؟">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@category.Id" />
+                            <button type="submit" class="btn btn--danger btn--sm">حذف</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,30 @@
+@page "/order/failed"
+@model ShopingStore.Web.Pages.Checkout.FailedModel
+@{
+    ViewData["Title"] = "پرداخت ناموفق";
+}
+<div class="card text-center" style="max-width:620px;margin:2rem auto">
+    <div style="font-size:3rem">⚠️</div>
+    <h2>پرداخت انجام نشد</h2>
+    <p class="muted">
+        @if (!string.IsNullOrWhiteSpace(Model.OrderNumber))
+        {
+            <span>سفارش <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.OrderNumber)</strong> ثبت شده ولی پرداخت آن تکمیل نشده است.</span>
+        }
+        else
+        {
+            <span>پرداخت شما تکمیل نشد یا توسط شما لغو شد.</span>
+        }
+        <br />
+        می‌توانید مجدداً تلاش کنید یا با پشتیبانی تماس بگیرید.
+    </p>
+
+    <div class="flex" style="justify-content:center;margin-top:1.2rem">
+        @if (!string.IsNullOrWhiteSpace(Model.OrderNumber))
+        {
+            <a class="btn btn--primary" href="/payment/gateway?order=@Model.OrderNumber">تلاش مجدد برای پرداخت</a>
+        }
+        <a class="btn btn--ghost" href="/account/orders">سفارش‌های من</a>
+        <a class="btn btn--ghost" href="/contact">تماس با پشتیبانی</a>
+    </div>
+</div>

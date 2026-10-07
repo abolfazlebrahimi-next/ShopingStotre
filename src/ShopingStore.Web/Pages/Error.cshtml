@@ -1,0 +1,30 @@
+@page "/error"
+@page "/error/{code:int}"
+@model ShopingStore.Web.Pages.ErrorModel
+@{
+    ViewData["Title"] = "خطا";
+    Layout = "_Layout";
+
+    var title = Model.Code switch
+    {
+        404 => "صفحه مورد نظر یافت نشد",
+        403 => "دسترسی غیرمجاز",
+        _ => "خطایی رخ داد"
+    };
+
+    var description = Model.Code switch
+    {
+        404 => "ممکن است آدرس صفحه تغییر کرده یا محصول حذف شده باشد.",
+        403 => "شما اجازه دسترسی به این بخش را ندارید.",
+        _ => "در پردازش درخواست شما مشکلی پیش آمد. لطفاً دوباره تلاش کنید."
+    };
+}
+<div class="card text-center" style="max-width:620px;margin:2rem auto">
+    <div style="font-size:3rem">🚧</div>
+    <h1 style="font-size:1.4rem">@title</h1>
+    <p class="muted">@description</p>
+    <div class="flex" style="justify-content:center">
+        <a class="btn btn--primary" href="/">بازگشت به صفحه اصلی</a>
+        <a class="btn btn--ghost" href="/products">مشاهده محصولات</a>
+    </div>
+</div>

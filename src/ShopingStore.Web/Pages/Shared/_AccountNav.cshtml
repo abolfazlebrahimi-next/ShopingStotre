@@ -1,0 +1,20 @@
+@{
+    var current = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    string Active(string page) => current.Equals(page, StringComparison.OrdinalIgnoreCase) ? "is-active" : string.Empty;
+}
+<nav class="account-nav">
+    <a class="@Active("/Account/Index")" href="/account">داشبورد حساب</a>
+    <a class="@Active("/Account/Orders")" href="/account/orders">سفارش‌های من</a>
+    <a class="@Active("/Account/Favorites")" href="/account/favorites">علاقه‌مندی‌ها</a>
+    <a class="@Active("/Account/Addresses")" href="/account/addresses">آدرس‌ها</a>
+    <a class="@Active("/Account/Profile")" href="/account/profile">اطلاعات حساب</a>
+    <a class="@Active("/Account/ChangePassword")" href="/account/change-password">تغییر رمز عبور</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Support"))
+    {
+        <a href="/admin">پنل مدیریت</a>
+    }
+    <form method="post" action="/account/logout">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn--ghost btn--block btn--sm mt-1">خروج از حساب</button>
+    </form>
+</nav>

@@ -1,0 +1,13 @@
+{
+  "_توضیح": "این فایل را با نام appsettings.Local.json کپی کنید تا تنظیمات محلی خود را بدون تغییر فایل‌های اصلی اعمال کنید.",
+  "ConnectionStrings": {
+    "Default": "Server=.;Database=ShopingStoreDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
+  },
+  "Store": {
+    "EnableGoogleLogin": true,
+    "Google": {
+      "ClientId": "YOUR-CLIENT-ID.apps.googleusercontent.com",
+      "ClientSecret": "YOUR-CLIENT-SECRET"
+    }
+  }
+}

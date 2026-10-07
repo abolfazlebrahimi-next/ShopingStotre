@@ -1,0 +1,42 @@
+@page "/account/login"
+@model ShopingStore.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "ورود به حساب کاربری";
+    Layout = "_Layout";
+}
+
+<div class="card" style="max-width:440px;margin:1.5rem auto">
+    <h1 style="font-size:1.2rem;text-align:center">ورود به حساب کاربری</h1>
+    <p class="muted text-center" style="font-size:.85rem">برای پیگیری سفارش‌ها و خرید سریع‌تر وارد شوید.</p>
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+
+        <div class="form-row">
+            <label for="Email">ایمیل</label>
+            <input id="Email" type="email" name="email" value="@Model.Email" required autofocus dir="ltr" />
+        </div>
+
+        <div class="form-row">
+            <label for="Password">رمز عبور</label>
+            <input id="Password" type="password" name="password" required dir="ltr" />
+        </div>
+
+        <label class="checkbox mb-2">
+            <input type="checkbox" name="rememberMe" value="true" checked /> مرا به خاطر بسپار
+        </label>
+
+        <button type="submit" class="btn btn--primary btn--block">ورود</button>
+    </form>
+
+    <div class="mt-2 text-center" style="font-size:.85rem">
+        <a href="/account/register">حساب کاربری ندارید؟ ثبت‌نام کنید</a>
+    </div>
+
+    <div class="toast toast--info mt-2" style="font-size:.8rem">
+        حساب‌های نمونه برای تست:<br />
+        مدیر: <span dir="ltr">admin@shopingstore.ir / Admin@12345</span><br />
+        مشتری: <span dir="ltr">customer@shopingstore.ir / Customer@12345</span>
+    </div>
+</div>

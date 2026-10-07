@@ -1,0 +1,58 @@
+@page "/about"
+@model ShopingStore.Web.Pages.AboutModel
+@{
+    ViewData["Title"] = "درباره ما";
+}
+
+<div class="card">
+    <h1 style="font-size:1.3rem">درباره @Model.Settings.SiteName</h1>
+    <p>
+        ما یک فروشگاه اینترنتی هستیم که با هدف ارائه کالای اصل، قیمت منصفانه و خدمات پس از فروش مناسب فعالیت می‌کند.
+        تیم ما روزانه سفارش‌های مشتریان را در سریع‌ترین زمان ممکن پردازش و ارسال می‌کند.
+    </p>
+
+    <div class="grid-2 mt-3">
+        <div>
+            <h3 style="font-size:1rem">چرا ما؟</h3>
+            <ul class="muted">
+                <li>تضمین اصالت و سلامت فیزیکی کالا</li>
+                <li>پرداخت امن از طریق درگاه بانکی</li>
+                <li>ارسال سریع به سراسر کشور</li>
+                <li>۷ روز ضمانت بازگشت کالا</li>
+                <li>پشتیبانی ۷ روز هفته</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="font-size:1rem">اطلاعات تماس</h3>
+            <p class="muted">
+                نشانی: @Model.Settings.Address<br />
+                تلفن: @Model.Settings.SupportPhone<br />
+                ایمیل: @Model.Settings.SupportEmail
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3" id="shipping">
+    <h2 style="font-size:1.1rem">شیوه‌های ارسال</h2>
+    <p class="muted">
+        ارسال سفارش‌ها از طریق پست پیشتاز، تیپاکس و پیک درون‌شهری انجام می‌شود. هزینه ارسال
+        @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Settings.ShippingCost) است و برای سفارش‌های بالای
+        @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Settings.FreeShippingThreshold) رایگان محاسبه می‌شود.
+    </p>
+</div>
+
+<div class="card mt-3" id="return">
+    <h2 style="font-size:1.1rem">رویه بازگرداندن کالا</h2>
+    <p class="muted">
+        مشتریان می‌توانند تا ۷ روز پس از دریافت کالا، در صورت سالم بودن بسته‌بندی و عدم استفاده، درخواست مرجوعی ثبت کنند.
+        پس از تأیید کارشناسان، مبلغ کالا حداکثر تا ۷۲ ساعت کاری به حساب مشتری بازگردانده می‌شود.
+    </p>
+</div>
+
+<div class="card mt-3" id="privacy">
+    <h2 style="font-size:1.1rem">حریم خصوصی</h2>
+    <p class="muted">
+        اطلاعات شخصی مشتریان تنها برای پردازش سفارش‌ها و بهبود خدمات استفاده می‌شود و در اختیار هیچ شخص ثالثی قرار نمی‌گیرد.
+    </p>
+</div>

@@ -1,0 +1,15 @@
+/* استایل اختصاصی صفحات پیش‌نمایش استاتیک طراحی (فقط برای مشاهده ظاهر سایت) */
+@font-face { font-family: 'Vazirmatn'; src: url('assets/Vazirmatn-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('assets/Vazirmatn-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('assets/Vazirmatn-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+.preview-bar {
+    background: #111827; color: #f9fafb; font-size: .82rem;
+    padding: .5rem 0; position: sticky; top: 0; z-index: 90;
+}
+.preview-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.preview-bar nav { display: flex; gap: .35rem; flex-wrap: wrap; }
+.preview-bar a { color: #c7d2fe; padding: .2rem .6rem; border-radius: 8px; }
+.preview-bar a:hover, .preview-bar a.is-active { background: #4c1d95; color: #fff; }
+.preview-bar small { color: #9ca3af; }
+.mt-4 { margin-top: 2rem; }

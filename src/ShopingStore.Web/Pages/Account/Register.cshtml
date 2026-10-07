@@ -1,0 +1,50 @@
+@page "/account/register"
+@model ShopingStore.Web.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "ثبت‌نام";
+}
+
+<div class="card" style="max-width:480px;margin:1.5rem auto">
+    <h1 style="font-size:1.2rem;text-align:center">ساخت حساب کاربری</h1>
+    <p class="muted text-center" style="font-size:.85rem">با ثبت‌نام از تخفیف‌های ویژه و پیگیری آسان سفارش‌ها بهره‌مند شوید.</p>
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-row">
+            <label for="FullName">نام و نام خانوادگی</label>
+            <input id="FullName" name="fullName" value="@Model.FullName" required maxlength="150" />
+        </div>
+
+        <div class="form-row">
+            <label for="Email">ایمیل</label>
+            <input id="Email" type="email" name="email" value="@Model.Email" required dir="ltr" />
+        </div>
+
+        <div class="form-row">
+            <label for="PhoneNumber">شماره موبایل</label>
+            <input id="PhoneNumber" name="phoneNumber" value="@Model.PhoneNumber" required placeholder="09123456789" dir="ltr" maxlength="11" />
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="Password">رمز عبور</label>
+                <input id="Password" type="password" name="password" required minlength="6" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="ConfirmPassword">تکرار رمز عبور</label>
+                <input id="ConfirmPassword" type="password" name="confirmPassword" required minlength="6" dir="ltr" />
+            </div>
+        </div>
+
+        <label class="checkbox mb-2">
+            <input type="checkbox" name="acceptTerms" value="true" required /> <span>قوانین و شرایط استفاده را می‌پذیرم.</span>
+        </label>
+
+        <button type="submit" class="btn btn--primary btn--block">ثبت‌نام</button>
+    </form>
+
+    <div class="mt-2 text-center" style="font-size:.85rem">
+        <a href="/account/login">قبلاً ثبت‌نام کرده‌اید؟ وارد شوید</a>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+@model PaginationModel
+@{
+    var model = Model;
+    var start = Math.Max(1, model.Page - 2);
+    var end = Math.Min(model.TotalPages, start + 4);
+    start = Math.Max(1, Math.Min(start, Math.Max(1, end - 4)));
+}
+@if (model.TotalPages > 1)
+{
+    <nav class="pagination" aria-label="صفحه‌بندی">
+        @if (model.Page > 1)
+        {
+            <a href="@QueryStringHelper.Build(model.BasePath, model.Query ?? Context.Request.Query, model.PageParameter, model.Page - 1)">قبلی</a>
+        }
+        else
+        {
+            <span class="is-disabled">قبلی</span>
+        }
+
+        @for (var i = start; i <= end; i++)
+        {
+            if (i == model.Page)
+            {
+                <span class="is-active">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(i.ToString())</span>
+            }
+            else
+            {
+                <a href="@QueryStringHelper.Build(model.BasePath, model.Query ?? Context.Request.Query, model.PageParameter, i)">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(i.ToString())</a>
+            }
+        }
+
+        @if (model.Page < model.TotalPages)
+        {
+            <a href="@QueryStringHelper.Build(model.BasePath, model.Query ?? Context.Request.Query, model.PageParameter, model.Page + 1)">بعدی</a>
+        }
+        else
+        {
+            <span class="is-disabled">بعدی</span>
+        }
+    </nav>
+}

@@ -1,0 +1,35 @@
+## .NET / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.log
+TestResults/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+artifacts/
+publish/
+*.tlog
+*.cache
+.vscode/
+.idea/
+## Databases & secrets
+*.mdf
+*.ldf
+App_Data/
+*.db
+*.db-shm
+*.db-wal
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+## OS
+.DS_Store
+Thumbs.db
+## Node (only used for tooling)
+node_modules/

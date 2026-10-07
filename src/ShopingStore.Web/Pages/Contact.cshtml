@@ -1,0 +1,63 @@
+@page "/contact"
+@model ShopingStore.Web.Pages.ContactModel
+@{
+    ViewData["Title"] = "تماس با ما";
+}
+
+<div class="grid-2">
+    <div class="card">
+        <h1 style="font-size:1.2rem">با ما در تماس باشید</h1>
+        <p class="muted">
+            اگر سؤالی درباره سفارش، ارسال یا محصولات دارید، فرم زیر را پر کنید یا با شماره پشتیبانی تماس بگیرید.
+        </p>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-grid">
+                <div class="form-row">
+                    <label for="Name">نام و نام خانوادگی</label>
+                    <input id="Name" name="name" required maxlength="150" />
+                </div>
+                <div class="form-row">
+                    <label for="Phone">شماره تماس</label>
+                    <input id="Phone" name="phone" required dir="ltr" maxlength="11" />
+                </div>
+            </div>
+            <div class="form-row">
+                <label for="Email">ایمیل</label>
+                <input id="Email" type="email" name="email" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="Subject">موضوع</label>
+                <input id="Subject" name="subject" required maxlength="200" />
+            </div>
+            <div class="form-row">
+                <label for="Message">متن پیام</label>
+                <textarea id="Message" name="message" required maxlength="2000"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">ارسال پیام</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2 style="font-size:1.05rem">اطلاعات تماس</h2>
+        <p class="muted">
+            📍 @Model.Settings.Address<br />
+            ☎ @Model.Settings.SupportPhone<br />
+            ✉️ @Model.Settings.SupportEmail
+        </p>
+
+        <h2 style="font-size:1.05rem;margin-top:1.2rem">ساعات پاسخگویی</h2>
+        <p class="muted">شنبه تا پنجشنبه: ۸:۰۰ تا ۲۰:۰۰</p>
+
+        <h2 style="font-size:1.05rem">شبکه‌های اجتماعی</h2>
+        <p class="muted">
+            <a href="@Model.Settings.Instagram" target="_blank" rel="noopener nofollow">اینستاگرام</a> —
+            <a href="@Model.Settings.Telegram" target="_blank" rel="noopener nofollow">تلگرام</a>
+        </p>
+
+        <div class="toast toast--info" style="margin-top:1rem">
+            میانگین زمان پاسخگویی به پیام‌ها: کمتر از ۴ ساعت کاری
+        </div>
+    </div>
+</div>

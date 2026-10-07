@@ -1,0 +1,145 @@
+@page "/checkout"
+@model ShopingStore.Web.Pages.Checkout.IndexModel
+@{
+    ViewData["Title"] = "تکمیل اطلاعات و پرداخت";
+    var cart = Model.Cart;
+}
+
+<div class="steps">
+    <span>۱. سبد خرید</span>
+    <span class="is-active">۲. اطلاعات پرداخت</span>
+    <span>۳. پرداخت</span>
+</div>
+
+<h1 style="font-size:1.3rem">تکمیل اطلاعات خرید</h1>
+
+@if (cart.IsEmpty)
+{
+    <div class="card empty-state">
+        <h3>سبد خرید شما خالی است</h3>
+        <a class="btn btn--primary" href="/products">مشاهده محصولات</a>
+    </div>
+}
+else
+{
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <div class="grid-2" style="grid-template-columns: 2fr 1fr; align-items:start">
+            <div>
+                <div class="card mb-2">
+                    <h3 style="font-size:1rem">اطلاعات گیرنده</h3>
+
+                    @if (Model.Addresses.Count > 0)
+                    {
+                        <p class="hint">می‌توانید یکی از آدرس‌های ذخیره‌شده را انتخاب کنید:</p>
+                        <div class="mb-2">
+                            @foreach (var address in Model.Addresses)
+                            {
+                                <label class="address-card" style="display:block">
+                                    <input type="radio" name="AddressId" value="@address.Id" checked="@address.IsDefault" />
+                                    <strong>@address.Title</strong> — @address.ReceiverName، @address.PhoneNumber
+                                    <div class="muted" style="font-size:.82rem">@address.Province، @address.City، @address.Line — کدپستی @address.PostalCode</div>
+                                </label>
+                            }
+                            <label class="checkbox mt-1">
+                                <input type="checkbox" name="UseNewAddress" value="true" /> آدرس جدید وارد می‌کنم
+                            </label>
+                        </div>
+                    }
+
+                    <div class="form-grid">
+                        <div class="form-row">
+                            <label for="CustomerName">نام و نام خانوادگی گیرنده *</label>
+                            <input id="CustomerName" name="CustomerName" value="@Model.Request.CustomerName" required maxlength="150" />
+                        </div>
+                        <div class="form-row">
+                            <label for="CustomerPhone">شماره موبایل *</label>
+                            <input id="CustomerPhone" name="CustomerPhone" value="@Model.Request.CustomerPhone" required placeholder="09123456789" maxlength="11" />
+                        </div>
+                        <div class="form-row">
+                            <label for="CustomerEmail">ایمیل (اختیاری)</label>
+                            <input id="CustomerEmail" type="email" name="CustomerEmail" value="@Model.Request.CustomerEmail" />
+                        </div>
+                        <div class="form-row">
+                            <label for="Province">استان *</label>
+                            <input id="Province" name="Province" value="@Model.Request.Province" required list="provinces" />
+                            <datalist id="provinces">
+                                <option value="تهران"></option><option value="اصفهان"></option><option value="فارس"></option>
+                                <option value="خراسان رضوی"></option><option value="آذربایجان شرقی"></option><option value="گیلان"></option>
+                                <option value="مازندران"></option><option value="خوزستان"></option><option value="البرز"></option>
+                                <option value="قم"></option><option value="کرمان"></option><option value="یزد"></option>
+                            </datalist>
+                        </div>
+                        <div class="form-row">
+                            <label for="City">شهر *</label>
+                            <input id="City" name="City" value="@Model.Request.City" required />
+                        </div>
+                        <div class="form-row">
+                            <label for="PostalCode">کد پستی *</label>
+                            <input id="PostalCode" name="PostalCode" value="@Model.Request.PostalCode" required maxlength="10" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="AddressLine">نشانی کامل *</label>
+                        <textarea id="AddressLine" name="AddressLine" required maxlength="600">@Model.Request.AddressLine</textarea>
+                    </div>
+
+                    <label class="checkbox">
+                        <input type="checkbox" name="SaveAddress" value="true" checked /> این آدرس در حساب من ذخیره شود
+                    </label>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size:1rem">شیوه پرداخت</h3>
+
+                    <label class="address-card" style="display:block">
+                        <input type="radio" name="PaymentMethod" value="Online" checked />
+                        <strong>پرداخت اینترنتی</strong>
+                        <div class="muted" style="font-size:.82rem">انتقال به درگاه بانکی امن (شبیه‌ساز درگاه در این نمونه)</div>
+                    </label>
+
+                    <label class="address-card" style="display:block">
+                        <input type="radio" name="PaymentMethod" value="CashOnDelivery" />
+                        <strong>پرداخت در محل</strong>
+                        <div class="muted" style="font-size:.82rem">
+                            پرداخت هنگام تحویل کالا (کارمزد: @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Settings.CashOnDeliveryFee))
+                        </div>
+                    </label>
+
+                    <div class="form-row mt-2">
+                        <label for="CustomerNote">توضیحات سفارش (اختیاری)</label>
+                        <textarea id="CustomerNote" name="CustomerNote" maxlength="1000" style="min-height:80px">@Model.Request.CustomerNote</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size:1rem">خلاصه سفارش</h3>
+                <ul class="summary-list">
+                    @foreach (var item in cart.Items)
+                    {
+                        <li>
+                            <span>@item.ProductName × @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(item.Quantity.ToString())</span>
+                            <span>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.LineTotal)</span>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="summary-list mt-2">
+                    <li><span>جمع کالاها</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.Subtotal)</span></li>
+                    @if (cart.DiscountAmount > 0)
+                    {
+                        <li><span>تخفیف (@cart.DiscountCode)</span><span style="color:var(--danger)">- @ShopingStore.Domain.Common.PersianDate.ToPrice(cart.DiscountAmount)</span></li>
+                    }
+                    <li><span>هزینه ارسال</span><span>@(cart.ShippingCost == 0 ? "رایگان" : ShopingStore.Domain.Common.PersianDate.ToPrice(cart.ShippingCost))</span></li>
+                    <li><span>مالیات بر ارزش افزوده</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.TaxAmount)</span></li>
+                    <li class="total"><span>مبلغ قابل پرداخت</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.Total)</span></li>
+                </ul>
+
+                <button type="submit" class="btn btn--primary btn--block mt-2">ثبت سفارش و پرداخت</button>
+                <a href="/cart" class="btn btn--ghost btn--block mt-1">بازگشت به سبد خرید</a>
+            </div>
+        </div>
+    </form>
+}

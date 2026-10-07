@@ -1,0 +1,61 @@
+@page "/admin/discounts"
+@model ShopingStore.Web.Pages.Admin.Discounts.IndexModel
+@{
+    ViewData["Title"] = "کدهای تخفیف";
+}
+
+<div class="flex-between mb-3">
+    <p class="muted" style="margin:0;font-size:.88rem">کدهای تخفیف درصدی یا مبلغ ثابت با محدودیت زمانی و تعداد استفاده.</p>
+    <a href="/admin/discounts/edit" class="btn btn--success">➕ کد تخفیف جدید</a>
+</div>
+
+<div class="table-wrap">
+    <table class="data">
+        <thead>
+        <tr><th>کد</th><th>نوع</th><th>مقدار</th><th>حداقل سفارش</th><th>سقف تخفیف</th><th>استفاده شده</th><th>اعتبار</th><th>وضعیت</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var code in Model.Codes)
+        {
+            <tr>
+                <td dir="ltr"><strong>@code.Code</strong></td>
+                <td>@code.Type.ToPersianTitle()</td>
+                <td>@code.AmountLabel</td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(code.MinOrderAmount)</td>
+                <td>@(code.MaxDiscountAmount is null ? "—" : ShopingStore.Domain.Common.PersianDate.ToPrice(code.MaxDiscountAmount.Value))</td>
+                <td>
+                    @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(code.UsedCount.ToString())
+                    @(code.UsageLimit is null ? "" : $"/ {ShopingStore.Domain.Common.PersianDate.ToPersianDigits(code.UsageLimit.Value.ToString())}")
+                </td>
+                <td>
+                    <span style="font-size:.8rem">
+                        @(code.StartsAtUtc is null ? "از ابتدا" : ShopingStore.Domain.Common.PersianDate.ToShortPersian(code.StartsAtUtc))
+                        —
+                        @(code.ExpiresAtUtc is null ? "بدون انقضا" : ShopingStore.Domain.Common.PersianDate.ToShortPersian(code.ExpiresAtUtc))
+                    </span>
+                </td>
+                <td>
+                    @if (code.IsActive)
+                    {
+                        <span class="status status--success">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="status status--secondary">غیرفعال</span>
+                    }
+                </td>
+                <td>
+                    <div class="flex">
+                        <a class="btn btn--ghost btn--sm" href="/admin/discounts/edit/@code.Id">ویرایش</a>
+                        <form method="post" asp-page-handler="Delete" data-confirm="این کد تخفیف حذف شود؟">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@code.Id" />
+                            <button type="submit" class="btn btn--danger btn--sm">حذف</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

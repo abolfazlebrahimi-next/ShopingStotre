@@ -1,0 +1,48 @@
+@page "/admin/categories/edit/{id:int?}"
+@model ShopingStore.Web.Pages.Admin.Categories.EditModel
+@{
+    var isNew = Model.Category is null;
+    ViewData["Title"] = isNew ? "افزودن دسته‌بندی" : $"ویرایش «{Model.Category!.Name}»";
+    var category = Model.Category;
+}
+
+<form method="post" style="max-width:640px">
+    @Html.AntiForgeryToken()
+    <div class="admin-form-section">
+        <div class="form-row">
+            <label for="Name">نام دسته‌بندی *</label>
+            <input id="Name" name="name" value="@category?.Name" required maxlength="150" />
+        </div>
+        <div class="form-row">
+            <label for="Slug">نامک (اختیاری)</label>
+            <input id="Slug" name="slug" value="@category?.Slug" dir="ltr" maxlength="200" />
+        </div>
+        <div class="form-row">
+            <label for="ParentId">دسته والد</label>
+            <select id="ParentId" name="parentId">
+                <option value="">بدون والد (دسته اصلی)</option>
+                @foreach (var parent in Model.Parents)
+                {
+                    <option value="@parent.Id" selected="@(category?.ParentId == parent.Id)">@parent.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="Description">توضیحات</label>
+            <textarea id="Description" name="description" maxlength="1000">@category?.Description</textarea>
+        </div>
+        <div class="form-row">
+            <label for="Icon">آیکون (نام آیکون: mobile, laptop, headphone, watch, home, shirt, sparkle, ball)</label>
+            <input id="Icon" name="icon" value="@category?.Icon" dir="ltr" />
+        </div>
+        <div class="form-row">
+            <label for="SortOrder">ترتیب نمایش</label>
+            <input id="SortOrder" type="number" name="sortOrder" value="@(category?.SortOrder ?? 0)" dir="ltr" />
+        </div>
+        <label class="checkbox mb-2">
+            <input type="checkbox" name="isActive" value="true" checked="@(category?.IsActive ?? true)" /> فعال و قابل نمایش
+        </label>
+        <button type="submit" class="btn btn--primary">@(isNew ? "ایجاد دسته‌بندی" : "ذخیره تغییرات")</button>
+        <a class="btn btn--ghost" href="/admin/categories">بازگشت</a>
+    </div>
+</form>

@@ -1,0 +1,65 @@
+@page "/admin/discounts/edit/{id:int?}"
+@model ShopingStore.Web.Pages.Admin.Discounts.EditModel
+@{
+    var isNew = Model.Code is null;
+    ViewData["Title"] = isNew ? "کد تخفیف جدید" : $"ویرایش کد {Model.Code!.Code}";
+    var code = Model.Code;
+}
+
+<form method="post" style="max-width:640px">
+    @Html.AntiForgeryToken()
+    <div class="admin-form-section">
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="Code">کد تخفیف *</label>
+                <input id="Code" name="code" value="@code?.Code" required dir="ltr" maxlength="60" placeholder="مثلاً OFF10" />
+            </div>
+            <div class="form-row">
+                <label for="Type">نوع تخفیف</label>
+                <select id="Type" name="type">
+                    <option value="Percentage" selected="@(code?.Type != DiscountType.FixedAmount)">درصدی</option>
+                    <option value="FixedAmount" selected="@(code?.Type == DiscountType.FixedAmount)">مبلغ ثابت (تومان)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="Amount">مقدار (درصد یا تومان) *</label>
+                <input id="Amount" type="number" name="amount" value="@code?.Amount" required step="1000" min="1" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="MinOrderAmount">حداقل مبلغ سفارش (تومان)</label>
+                <input id="MinOrderAmount" type="number" name="minOrderAmount" value="@(code?.MinOrderAmount ?? 0)" step="10000" min="0" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="MaxDiscountAmount">سقف تخفیف برای کد درصدی</label>
+                <input id="MaxDiscountAmount" type="number" name="maxDiscountAmount" value="@code?.MaxDiscountAmount" step="10000" min="0" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="UsageLimit">حداکثر تعداد استفاده</label>
+                <input id="UsageLimit" type="number" name="usageLimit" value="@code?.UsageLimit" min="1" dir="ltr" />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label for="Description">توضیحات</label>
+            <input id="Description" name="description" value="@code?.Description" maxlength="400" />
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="StartsAt">تاریخ شروع (میلادی)</label>
+                <input id="StartsAt" type="date" name="startsAt" value="@code?.StartsAtUtc?.ToString("yyyy-MM-dd")" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="ExpiresAt">تاریخ پایان (میلادی)</label>
+                <input id="ExpiresAt" type="date" name="expiresAt" value="@code?.ExpiresAtUtc?.ToString("yyyy-MM-dd")" dir="ltr" />
+            </div>
+        </div>
+
+        <label class="checkbox mb-2">
+            <input type="checkbox" name="isActive" value="true" checked="@(code?.IsActive ?? true)" /> کد فعال باشد
+        </label>
+
+        <button type="submit" class="btn btn--primary">@(isNew ? "ایجاد کد تخفیف" : "ذخیره تغییرات")</button>
+        <a class="btn btn--ghost" href="/admin/discounts">بازگشت</a>
+    </div>
+</form>
