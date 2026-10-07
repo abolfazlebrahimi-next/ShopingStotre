@@ -85,6 +85,7 @@ ShopingStore.sln
 ├── tools/                              # اسکریپت‌های تشخیصی محیط (check-environment.ps1 / .sh)
 ├── docker-compose.yml                  # راه‌اندازی سریع SQL Server
 ├── global.json                         # میخ‌کوب‌کردن نسخه SDK دات‌نت ۱۰
+├── nuget.config                        # تنظیم صریح منبع بسته‌ها روی nuget.org
 ├── ShopingStore.slnx                   # سولوشن جایگزین (VS 2026 / dotnet 10)
 ├── .editorconfig                       # یکسان‌سازی سبک کد و کدگذاری UTF-8 (BOM)
 └── README.md
@@ -170,7 +171,14 @@ dotnet ef database update --project src/ShopingStore.Infrastructure --startup-pr
 1. فایل **`ShopingStore.sln`** را باز کنید (نه پوشه پروژه).
 2. روی پروژه **`ShopingStore.Web`** راست‌کلیک کنید و **Set as Startup Project** را بزنید.
    (در صورت نیاز: راست‌کلیک روی Solution → **Restore NuGet Packages**.)
-3. در نوار ابزار، یکی از پروفایل‌های `https` یا `http` را انتخاب کنید و **F5** بزنید.
+3. **قبل از اولین اجرا، Restore را بزنید** (کلید اصلی! اولین اجرای هر مخزن تازه، پوشه `obj` ندارد):
+   راست‌کلیک روی **Solution** → **Restore NuGet Packages**، یا در ترمینال داخل پوشه مخزن:
+   ```bash
+   dotnet restore
+   ```
+   اگر این مرحله را انجام ندهید، Build با خطای `NETSDK1004: Assets file ... not found` شکست می‌خورد.
+
+4. در نوار ابزار، یکی از پروفایل‌های `https` یا `http` را انتخاب کنید و **F5** بزنید.
 
 برنامه روی این آدرس‌ها بالا می‌آید (قابل تغییر در `launchSettings.json`):
 
@@ -179,7 +187,7 @@ https://localhost:7100      پروفایل https
 http://localhost:5100       پروفایل http
 ```
 
-4. در پنجره **Package Manager Console** (منوی Tools → NuGet Package Manager) می‌توانید
+5. در پنجره **Package Manager Console** (منوی Tools → NuGet Package Manager) می‌توانید
    مایگریشن‌ها را هم بسازید — کافی است «Default project» را روی `ShopingStore.Infrastructure` بگذارید:
 
 ```powershell
@@ -205,7 +213,9 @@ powershell -ExecutionPolicy Bypass -File tools\check-environment.ps1
 | «The project file cannot be opened» | بار کاری **ASP.NET and web development** نصب نیست | Visual Studio Installer → Modify → Workloads → ASP.NET and web development |
 | دکمه Run غیرفعال است / Startup Project انتخاب نمی‌شود | پوشه به‌جای سولوشن باز شده یا پروژه Web انتخاب نشده | فایل `ShopingStore.sln` را باز کنید؛ اگر باز نشد **`ShopingStore.slnx`** را امتحان کنید |
 | سولوشن باز می‌شود ولی F5 کاری نمی‌کند | فایل `launchSettings.json` قدیمی در `.vs` | پوشه مخفی `.vs` را کنار سولوشن پاک کنید و دوباره باز کنید |
-| خطای Restore/NuGet | نبود دسترسی به nuget.org یا فایل‌های `obj` قدیمی | حذف پوشه‌های `bin` و `obj` و سپس Restore NuGet Packages |
+| `error NETSDK1004: Assets file ... not found` | **Restore اجرا نشده** (طبیعی است؛ پوشه `obj` در گیت نیست) | راست‌کلیک روی Solution → **Restore NuGet Packages**، یا در پوشه مخزن: `dotnet restore` |
+| خطای Restore/NuGet (`NU1101` و مشابه) | نبود دسترسی به nuget.org | فایل `nuget.config` در ریشه مخزن منبع را صریحاً روی nuget.org تنظیم می‌کند؛ اتصال اینترنت/فایروال را بررسی کنید |
+| بعد از Build موفق، خطای «no such table» یا صفحه خالی | دیتابیس در دسترس نیست | `docker compose up -d` یا تنظیم `appsettings.Local.json` (بخش بعدی) |
 
 > اگر مجبورید روی ویژوال استودیو ۲۰۲۲ بمانید: آن نسخه از .NET 10 پشتیبانی نمی‌کند؛ در این حالت
 > پروژه را از خط فرمان (`dotnet run --project src/ShopingStore.Web`) اجرا کنید.
