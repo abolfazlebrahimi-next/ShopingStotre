@@ -1,4 +1,4 @@
-# 🛍️ ShopingStore — فروشگاه اینترنتی کامل با ASP.NET Core 10
+﻿# 🛍️ ShopingStore — فروشگاه اینترنتی کامل با ASP.NET Core 10
 
 یک فروشگاه اینترنتی **کامل، فارسی و راست‌به‌چپ** که کاملاً با **.NET 10** نوشته شده است؛
 هم بک‌اند (منطق فروشگاه، پنل مدیریت، پرداخت، مدیریت داده) و هم **فرانت‌اند داخل خود دات‌نت**
@@ -75,11 +75,15 @@ ShopingStore.sln
 │   └── ShopingStore.Web/               # رابط کاربری (Razor Pages) و APIهای سبک
 │       ├── Pages/                      # Index, Products, Cart, Checkout, Payment, Account, Admin, ...
 │       ├── Endpoints/                  # /api/products/suggest، /api/cart/count، /api/wishlist/toggle، sitemap
-│       ├── Infrastructure/             # CartIdentity (کوکی سبد)، HttpCurrentUser، ToastService
+│       ├── Infrastructure/             # CartIdentity (کوکی سبد)، HttpCurrentUser، ToastService، PaginationModel
+│       ├── Properties/                 # launchSettings.json (پروفایل‌های اجرا در ویژوال استودیو)
+│       ├── appsettings.json            # رشته اتصال و تنظیمات فروشگاه
+│       ├── appsettings.Local.json.example  # نمونه بازنویسی تنظیمات محلی (رشته اتصال ویندوز)
 │       └── wwwroot/                    # css، js، فونت وزیرمتن، تصاویر SVG
 │
 ├── preview/                            # پیش‌نمایش استاتیک طراحی (HTML/CSS) برای مشاهده سریع ظاهر سایت
 ├── docker-compose.yml                  # راه‌اندازی سریع SQL Server
+├── .editorconfig                       # یکسان‌سازی سبک کد و کدگذاری UTF-8 (BOM)
 └── README.md
 ```
 
@@ -112,7 +116,8 @@ ShopingStore.sln
 ```
 
 > می‌توانید تنظیمات محلی خود را در فایل `appsettings.Local.json` قرار دهید
-> (نمونه: `appsettings.Local.json.example`).
+> (نمونه: `appsettings.Local.json.example`). این فایل بلافاصله **بعد از** `appsettings.json`
+> بارگذاری می‌شود و مقدارهای آن اولویت دارند؛ در `.gitignore` هم قرار دارد و به مخزن ارسال نمی‌شود.
 
 ### ۲) اجرا
 ```bash
@@ -120,7 +125,7 @@ dotnet restore
 dotnet run --project src/ShopingStore.Web
 ```
 
-برنامه در آدرس زیر بالا می‌آید (پورت در `launchSettings`/لاگ مشخص می‌شود):
+برنامه در آدرس‌های زیر بالا می‌آید (تعریف‌شده در `src/ShopingStore.Web/Properties/launchSettings.json`):
 
 ```
 https://localhost:7100   یا   http://localhost:5100
@@ -139,6 +144,62 @@ dotnet tool install --global dotnet-ef
 dotnet ef migrations add InitialCreate --project src/ShopingStore.Infrastructure --startup-project src/ShopingStore.Web
 dotnet ef database update --project src/ShopingStore.Infrastructure --startup-project src/ShopingStore.Web
 ```
+
+---
+
+## 🧑‍💻 اجرا در ویژوال استودیو
+
+پروژه یک راه‌اندازی آماده برای ویژوال استودیو دارد (`src/ShopingStore.Web/Properties/launchSettings.json`).
+
+### پیش‌نیاز مهم
+| مورد | نسخه لازم |
+|---|---|
+| ویژوال استودیو | **Visual Studio 2026 (نسخه ۱۸.x)** — هدف‌گذاری `net10.0` فقط از VS 2026 پشتیبانی می‌شود |
+| .NET SDK | **10.0.x** (نصب آن همراه VS 2026 یا از [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/10.0)) |
+| دیتابیس | Docker Desktop (`docker compose up -d`) یا SQL Server Express/LocalDB |
+
+> اگر ویژوال استودیو ۲۰۲۲ دارید، خطای `NETSDK1045` می‌گیرید
+> («The current .NET SDK does not support targeting .NET 10.0»)؛ چون VS 2022 از .NET 10
+> پشتیبانی نمی‌کند. در این حالت یا VS 2026 را نصب کنید یا برنامه را از خط فرمان با
+> `dotnet run --project src/ShopingStore.Web` اجرا کنید (همان SDK کار می‌کند).
+
+### گام‌ها
+1. فایل **`ShopingStore.sln`** را باز کنید (نه پوشه پروژه).
+2. روی پروژه **`ShopingStore.Web`** راست‌کلیک کنید و **Set as Startup Project** را بزنید.
+   (در صورت نیاز: راست‌کلیک روی Solution → **Restore NuGet Packages**.)
+3. در نوار ابزار، یکی از پروفایل‌های `https` یا `http` را انتخاب کنید و **F5** بزنید.
+
+برنامه روی این آدرس‌ها بالا می‌آید (قابل تغییر در `launchSettings.json`):
+
+```
+https://localhost:7100      پروفایل https
+http://localhost:5100       پروفایل http
+```
+
+4. در پنجره **Package Manager Console** (منوی Tools → NuGet Package Manager) می‌توانید
+   مایگریشن‌ها را هم بسازید — کافی است «Default project» را روی `ShopingStore.Infrastructure` بگذارید:
+
+```powershell
+Add-Migration InitialCreate -Project ShopingStore.Infrastructure -StartupProject ShopingStore.Web
+Update-Database -Project ShopingStore.Infrastructure -StartupProject ShopingStore.Web
+```
+
+> اگر مایگریشنی نسازید هم مشکلی نیست؛ در اولین اجرا دیتابیس از روی مدل ساخته و
+> داده‌های نمونه درج می‌شود. فقط باید دیتابیس در دسترس باشد.
+
+### ترفندهای ویژه ویژوال استودیو
+- **بدون دست‌زدن به فایل‌های اصلی:** فایل `appsettings.Local.json.example` را به
+  `appsettings.Local.json` تغییر نام دهید و رشته اتصال محلی خود را در آن بگذارید
+  (سه نمونه آماده: LocalDB، SQL Express و Docker). این فایل خودکار خوانده می‌شود.
+- **User Secrets:** پروژه `UserSecretsId` دارد؛ راست‌کلیک روی پروژه → **Manage User Secrets**
+  و می‌توانید رمزها را آنجا نگه دارید.
+- **گواهی HTTPS:** اگر مرورگر هشدار داد، یک‌بار `dotnet dev-certs https --trust` را اجرا کنید
+  یا از پروفایل `http` استفاده کنید.
+- **خطای «cannot connect to database»:** برنامه به کار ادامه می‌دهد ولی صفحه‌ها داده‌ای
+  ندارند؛ ابتدا SQL Server را بالا بیاورید (`docker compose up -d`) یا رشته اتصال را به
+  LocalDB/SQL Express تغییر دهید.
+- **خطای طول مسیر ویندوز:** اگر مسیر `Path too long` گرفتید، مخزن را در مسیر کوتاه‌تری
+  مثل `C:\Projects\ShopingStore` کلون کنید.
 
 ---
 
@@ -222,6 +283,23 @@ services.AddSingleton<IPaymentGateway, ZarinPalGateway>();
 
 **تصاویر آپلودشده نمایش داده نمی‌شوند**
 تصاویر در `wwwroot/uploads/products` ذخیره می‌شوند؛ دسترسی نوشتن این پوشه را بررسی کنید.
+
+**در ویژوال استودیو خطای `NETSDK1045` می‌گیرم**
+یعنی نسخه ویژوال استودیو از .NET 10 پشتیبانی نمی‌کند. هدف‌گذاری `net10.0` فقط در
+**Visual Studio 2026 (۱۸.x)** پشتیبانی می‌شود؛ ارتقا دهید یا از خط فرمان اجرا کنید:
+`dotnet run --project src/ShopingStore.Web`.
+
+**پروژه در ویژوال استودیو باز نمی‌شود / صفحه‌ها نمی‌آید**
+باید `ShopingStore.sln` (و نه پوشه پروژه) باز شود و پروژه `ShopingStore.Web` به‌عنوان
+Startup Project انتخاب شود. همچنین مطمئن شوید NuGet Restore کامل انجام شده است (بسته‌های
+`Microsoft.EntityFrameworkCore.*` نسخه 10.0.0 باید دانلود شوند).
+
+**برنامه اجرا می‌شود ولی همه صفحه‌ها خطا می‌دهند**
+یعنی دیتابیس در دسترس نیست. خروجی کنسول پیام «امکان اتصال به دیتابیس وجود ندارد» را نشان می‌دهد.
+`docker compose up -d` را اجرا کنید یا در `appsettings.Local.json` رشته اتصال LocalDB/SQL Express بگذارید.
+
+**مرورگر هشدار امنیتی گواهی می‌دهد**
+یک‌بار `dotnet dev-certs https --trust` را اجرا کنید یا پروفایل `http` را از نوار ابزار انتخاب کنید.
 
 ---
 

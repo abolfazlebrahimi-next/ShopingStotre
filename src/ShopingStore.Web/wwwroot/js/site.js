@@ -1,4 +1,4 @@
-/* ShopingStore - اسکریپت فروشگاه */
+﻿/* ShopingStore - اسکریپت فروشگاه */
 (function () {
     'use strict';
 

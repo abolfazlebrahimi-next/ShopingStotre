@@ -1,0 +1,10 @@
+# نرمال‌سازی خط‌پایان‌ها؛ در ویندوز به‌صورت خودکار CRLF و در لینوکس LF
+* text=auto
+
+*.sln      text eol=crlf
+*.csproj   text eol=crlf
+*.props    text eol=crlf
+*.woff2    binary
+*.png      binary
+*.jpg      binary
+*.ico      binary

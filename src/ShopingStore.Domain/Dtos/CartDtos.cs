@@ -1,4 +1,4 @@
-namespace ShopingStore.Domain.Dtos;
+﻿namespace ShopingStore.Domain.Dtos;
 
 public class CartDto
 {

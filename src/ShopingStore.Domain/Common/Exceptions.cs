@@ -1,4 +1,4 @@
-namespace ShopingStore.Domain.Common;
+﻿namespace ShopingStore.Domain.Common;
 
 /// <summary>خطای منطق کسب‌وکار که پیام آن مستقیماً به کاربر نمایش داده می‌شود.</summary>
 public class BusinessException : Exception

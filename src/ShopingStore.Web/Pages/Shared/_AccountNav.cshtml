@@ -1,4 +1,4 @@
-@{
+﻿@{
     var current = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
     string Active(string page) => current.Equals(page, StringComparison.OrdinalIgnoreCase) ? "is-active" : string.Empty;
 }

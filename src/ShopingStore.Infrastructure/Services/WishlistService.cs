@@ -1,4 +1,4 @@
-using ShopingStore.Domain.Interfaces.Repositories;
+﻿using ShopingStore.Domain.Interfaces.Repositories;
 using ShopingStore.Domain.Interfaces.Services;
 using ShopingStore.Infrastructure.Mapping;
 

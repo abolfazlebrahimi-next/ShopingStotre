@@ -1,4 +1,4 @@
-namespace ShopingStore.Domain.Interfaces;
+﻿namespace ShopingStore.Domain.Interfaces;
 
 /// <summary>انتزاع زمان برای تست‌پذیری.</summary>
 public interface IClock

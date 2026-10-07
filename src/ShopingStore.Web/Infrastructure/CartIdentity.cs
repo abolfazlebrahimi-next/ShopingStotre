@@ -1,4 +1,4 @@
-namespace ShopingStore.Web.Infrastructure;
+﻿namespace ShopingStore.Web.Infrastructure;
 
 /// <summary>
 /// شناسه سبد خرید مهمان که در یک کوکی ذخیره می‌شود؛

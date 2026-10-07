@@ -1,10 +1,15 @@
-{
-  "_توضیح": "این فایل را با نام appsettings.Local.json کپی کنید تا تنظیمات محلی خود را بدون تغییر فایل‌های اصلی اعمال کنید.",
+﻿{
+  "_توضیح": "این فایل را با نام appsettings.Local.json کنار همین فایل کپی کنید تا تنظیمات محلی شما روی appsettings.json اعمال شود (این فایل در .gitignore است).",
+  "_راهنمای_رشته_اتصال": {
+    "LocalDB (نصب‌شده همراه ویژوال استودیو)": "Server=(localdb)\\MSSQLLocalDB;Database=ShopingStoreDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true",
+    "SQL Server Express": "Server=.\\SQLEXPRESS;Database=ShopingStoreDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true",
+    "Docker (docker compose up -d)": "Server=localhost,1433;Database=ShopingStoreDb;User Id=sa;Password=Shop@Store12345;TrustServerCertificate=True;MultipleActiveResultSets=true"
+  },
   "ConnectionStrings": {
-    "Default": "Server=.;Database=ShopingStoreDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
+    "Default": "Server=(localdb)\\MSSQLLocalDB;Database=ShopingStoreDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
   },
   "Store": {
-    "EnableGoogleLogin": true,
+    "EnableGoogleLogin": false,
     "Google": {
       "ClientId": "YOUR-CLIENT-ID.apps.googleusercontent.com",
       "ClientSecret": "YOUR-CLIENT-SECRET"

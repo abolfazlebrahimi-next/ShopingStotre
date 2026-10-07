@@ -1,4 +1,4 @@
-using ShopingStore.Domain.Interfaces;
+﻿using ShopingStore.Domain.Interfaces;
 
 namespace ShopingStore.Infrastructure.Security;
 

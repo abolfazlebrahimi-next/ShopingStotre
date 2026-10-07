@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
@@ -10,6 +10,13 @@ using ShopingStore.Web.Endpoints;
 using ShopingStore.Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// امکان بازنویسی تنظیمات محلی بدون دست‌زدن به appsettings.json
+// (این فایل در .gitignore قرار دارد؛ نمونه آن: appsettings.Local.json.example)
+builder.Configuration.AddJsonFile(
+    Path.Combine(builder.Environment.ContentRootPath, "appsettings.Local.json"),
+    optional: true,
+    reloadOnChange: true);
 
 // ------------------------------------------------------------------ سرویس‌ها
 builder.Services.AddShopingStoreInfrastructure(builder.Configuration, builder.Environment.WebRootPath);
@@ -119,9 +126,17 @@ await using (var scope = app.Services.CreateAsyncScope())
     var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
+    // اگر دیتابیس در دسترس نباشد، اجرای برنامه را بیش از ۳۰ ثانیه منتظر نگه نمی‌داریم.
+    using var startupTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
     try
     {
-        await initializer.InitializeAsync();
+        await initializer.InitializeAsync(startupTimeout.Token);
+    }
+    catch (OperationCanceledException)
+    {
+        logger.LogWarning("زمان آماده‌سازی دیتابیس به پایان رسید؛ برنامه بدون داده اولیه ادامه می‌دهد. " +
+                          "برای رفع مشکل: docker compose up -d یا تنظیم ConnectionStrings:Default در appsettings.Local.json");
     }
     catch (Exception exception)
     {

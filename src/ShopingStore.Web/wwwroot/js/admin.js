@@ -1,4 +1,4 @@
-/* ShopingStore - اسکریپت پنل مدیریت */
+﻿/* ShopingStore - اسکریپت پنل مدیریت */
 (function () {
     'use strict';
 

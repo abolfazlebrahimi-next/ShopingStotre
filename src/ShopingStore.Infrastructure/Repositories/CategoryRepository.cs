@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopingStore.Domain.Entities;
 using ShopingStore.Domain.Interfaces.Repositories;
 using ShopingStore.Infrastructure.Data;

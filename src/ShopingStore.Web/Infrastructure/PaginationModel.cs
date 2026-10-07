@@ -1,4 +1,4 @@
-namespace ShopingStore.Web.Infrastructure;
+﻿namespace ShopingStore.Web.Infrastructure;
 
 /// <summary>مدل کمکی برای نمایش دکمه‌های صفحه‌بندی.</summary>
 public class PaginationModel

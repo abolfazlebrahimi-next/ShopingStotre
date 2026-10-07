@@ -1,4 +1,4 @@
-namespace ShopingStore.Domain.Common;
+﻿namespace ShopingStore.Domain.Common;
 
 /// <summary>
 /// کلاس پایه تمام موجودیت‌ها (کلید اصلی + تاریخ‌های سیستمی).

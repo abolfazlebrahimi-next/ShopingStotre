@@ -1,4 +1,4 @@
-using ShopingStore.Domain.Common;
+﻿using ShopingStore.Domain.Common;
 
 namespace ShopingStore.Domain.Entities;
 

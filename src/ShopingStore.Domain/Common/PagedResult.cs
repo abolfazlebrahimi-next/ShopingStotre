@@ -1,4 +1,4 @@
-namespace ShopingStore.Domain.Common;
+﻿namespace ShopingStore.Domain.Common;
 
 /// <summary>نتیجه صفحه‌بندی‌شده.</summary>
 public class PagedResult<T>

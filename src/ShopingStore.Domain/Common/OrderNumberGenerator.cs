@@ -1,4 +1,4 @@
-namespace ShopingStore.Domain.Common;
+﻿namespace ShopingStore.Domain.Common;
 
 /// <summary>ساخت شماره سفارش خوانا مانند ۱۴۰۵۰۷۱۵-۴۸۲۱.</summary>
 public static class OrderNumberGenerator
