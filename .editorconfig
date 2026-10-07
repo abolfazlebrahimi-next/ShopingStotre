@@ -1,0 +1,20 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# کدهای سی‌شارپ و Razor با UTF-8 BOM ذخیره می‌شوند تا متن‌های فارسی
+# در همه ویرایشگرها (از جمله ویژوال استودیو روی ویندوز) درست خوانده شوند.
+[*.{cs,cshtml}]
+charset = utf-8-bom
+indent_size = 4
+
+[*.{json,yml,yaml,xml,csproj,props,targets}]
+indent_size = 2
+
+[*.{css,js}]
+indent_size = 4

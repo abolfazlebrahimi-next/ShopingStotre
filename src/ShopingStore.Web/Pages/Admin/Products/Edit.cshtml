@@ -1,0 +1,135 @@
+﻿@page "/admin/products/edit/{id:int?}"
+@model ShopingStore.Web.Pages.Admin.Products.EditModel
+@{
+    var isNew = Model.Product is null;
+    ViewData["Title"] = isNew ? "افزودن محصول جدید" : $"ویرایش «{Model.Product!.Name}»";
+    var form = Model.Form;
+}
+
+<form method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Form.Id" value="@form.Id" />
+
+    <div class="grid-2" style="grid-template-columns: 2fr 1fr; align-items:start">
+        <div>
+            <div class="admin-form-section">
+                <h3>اطلاعات اصلی</h3>
+                <div class="form-row">
+                    <label for="Name">نام محصول *</label>
+                    <input id="Name" name="Form.Name" value="@form.Name" required maxlength="250" />
+                </div>
+                <div class="form-grid">
+                    <div class="form-row">
+                        <label for="CategoryId">دسته‌بندی *</label>
+                        <select id="CategoryId" name="Form.CategoryId" required>
+                            <option value="">انتخاب کنید...</option>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.Id" selected="@(form.CategoryId == category.Id)">@(category.ParentId is null ? category.Name : $"— {category.Name}")</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="Brand">برند</label>
+                        <input id="Brand" name="Form.Brand" value="@form.Brand" maxlength="120" />
+                    </div>
+                    <div class="form-row">
+                        <label for="Sku">کد کالا (SKU)</label>
+                        <input id="Sku" name="Form.Sku" value="@form.Sku" maxlength="60" dir="ltr" />
+                    </div>
+                    <div class="form-row">
+                        <label for="Slug">نامک (اختیاری - خودکار ساخته می‌شود)</label>
+                        <input id="Slug" name="Form.Slug" value="@form.Slug" maxlength="200" dir="ltr" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="ShortDescription">توضیح کوتاه</label>
+                    <input id="ShortDescription" name="Form.ShortDescription" value="@form.ShortDescription" maxlength="600" />
+                </div>
+                <div class="form-row">
+                    <label for="Description">توضیحات کامل (HTML مجاز است)</label>
+                    <textarea id="Description" name="Form.Description" style="min-height:200px">@form.Description</textarea>
+                </div>
+            </div>
+
+            <div class="admin-form-section">
+                <h3>مشخصات فنی</h3>
+                <div id="specs-container">
+                    @for (var i = 0; i < Math.Max(1, form.SpecNames.Count); i++)
+                    {
+                        <div class="repeat-row">
+                            <input name="Form.SpecNames" value="@(i < form.SpecNames.Count ? form.SpecNames[i] : "")" placeholder="عنوان ویژگی (مثلاً رنگ)" />
+                            <input name="Form.SpecValues" value="@(i < form.SpecValues.Count ? form.SpecValues[i] : "")" placeholder="مقدار (مثلاً مشکی)" />
+                            <button type="button" class="btn btn--ghost btn--sm" onclick="this.parentElement.remove()">حذف</button>
+                        </div>
+                    }
+                </div>
+                <button type="button" class="btn btn--ghost btn--sm mt-1" data-add-spec>➕ افزودن ویژگی</button>
+            </div>
+
+            <div class="admin-form-section">
+                <h3>تنوع محصول (رنگ، سایز و ...)</h3>
+                <div id="variants-container">
+                    @for (var i = 0; i < Math.Max(1, form.VariantNames.Count); i++)
+                    {
+                        <div class="repeat-row repeat-row--variant">
+                            <input name="Form.VariantNames" value="@(i < form.VariantNames.Count ? form.VariantNames[i] : "")" placeholder="نام تنوع (مثلاً سایز)" />
+                            <input name="Form.VariantOptions" value="@(i < form.VariantOptions.Count ? form.VariantOptions[i] : "")" placeholder="گزینه‌ها با کاما: S,M,L" />
+                            <button type="button" class="btn btn--ghost btn--sm" onclick="this.parentElement.remove()">حذف</button>
+                        </div>
+                    }
+                </div>
+                <button type="button" class="btn btn--ghost btn--sm mt-1" data-add-variant>➕ افزودن تنوع</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="admin-form-section">
+                <h3>قیمت و موجودی</h3>
+                <div class="form-row">
+                    <label for="Price">قیمت (تومان) *</label>
+                    <input id="Price" type="number" name="Form.Price" value="@form.Price" min="1000" step="1000" required dir="ltr" />
+                </div>
+                <div class="form-row">
+                    <label for="DiscountPrice">قیمت با تخفیف (اختیاری)</label>
+                    <input id="DiscountPrice" type="number" name="Form.DiscountPrice" value="@form.DiscountPrice" min="0" step="1000" dir="ltr" />
+                </div>
+                <div class="form-row">
+                    <label for="Stock">موجودی (عدد) *</label>
+                    <input id="Stock" type="number" name="Form.Stock" value="@form.Stock" min="0" required dir="ltr" />
+                </div>
+            </div>
+
+            <div class="admin-form-section">
+                <h3>تصویر محصول</h3>
+                <div class="form-row">
+                    <label for="MainImageUrl">آدرس تصویر اصلی</label>
+                    <input id="MainImageUrl" name="Form.MainImageUrl" value="@form.MainImageUrl" dir="ltr" />
+                </div>
+                <div class="form-row">
+                    <label for="image-upload">بارگذاری تصویر از رایانه</label>
+                    <input id="image-upload" type="file" accept="image/*" />
+                    <span class="hint">فرمت‌های مجاز: jpg، jpeg، png، webp، gif، svg - حداکثر ۳ مگابایت</span>
+                </div>
+                <div class="image-preview" id="image-preview">
+                    @if (!string.IsNullOrWhiteSpace(form.MainImageUrl))
+                    {
+                        <img src="@form.MainImageUrl" alt="پیش‌نمایش تصویر" />
+                    }
+                </div>
+            </div>
+
+            <div class="admin-form-section">
+                <h3>وضعیت نمایش</h3>
+                <label class="checkbox"><input type="checkbox" name="Form.IsActive" value="true" checked="@form.IsActive" /> فعال و قابل نمایش در فروشگاه</label>
+                <label class="checkbox"><input type="checkbox" name="Form.IsFeatured" value="true" checked="@form.IsFeatured" /> نمایش در بخش «منتخب فروشگاه»</label>
+                <label class="checkbox"><input type="checkbox" name="Form.IsNew" value="true" checked="@form.IsNew" /> برچسب «جدید»</label>
+            </div>
+
+            <div class="admin-form-section">
+                <button type="submit" class="btn btn--primary btn--block">@(isNew ? "ایجاد محصول" : "ذخیره تغییرات")</button>
+                <a class="btn btn--ghost btn--block mt-1" href="/admin/products">بازگشت به لیست</a>
+            </div>
+        </div>
+    </div>
+</form>

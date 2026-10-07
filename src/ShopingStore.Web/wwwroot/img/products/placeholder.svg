@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="تصویر محصول">
+  <rect width="320" height="320" rx="24" fill="#f3f2fa"/>
+  <g stroke="#b6b0d4" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="70" y="90" width="180" height="140" rx="14"/>
+    <circle cx="118" cy="138" r="16" fill="#d9d5ee" stroke="none"/>
+    <path d="M78 212l52-52 40 40 30-28 42 40"/>
+  </g>
+  <text x="160" y="268" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="18" fill="#9b95bf">تصویر محصول</text>
+</svg>

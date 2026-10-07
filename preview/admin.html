@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>داشبورد مدیریت | شاپینگ‌استور</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+    <link rel="stylesheet" href="../src/ShopingStore.Web/wwwroot/css/site.css" />
+    <link rel="stylesheet" href="preview.css" />
+    <link rel="stylesheet" href="../src/ShopingStore.Web/wwwroot/css/admin.css" />
+
+</head>
+<body class="admin-body">
+<div class="preview-bar">
+    <div class="container preview-bar__inner">
+        <span>🎨 <strong>پیش‌نمایش استاتیک طراحی</strong> <small>— نسخه واقعی با ASP.NET Core 10 (Razor Pages) اجرا می‌شود</small></span>
+        <nav>
+            <a href="index.html" class="">صفحه اصلی</a>
+            <a href="product.html" class="">جزئیات محصول</a>
+            <a href="cart.html" class="">سبد خرید</a>
+            <a href="checkout.html" class="">پرداخت</a>
+            <a href="admin.html" class="is-active">پنل مدیریت</a>
+        </nav>
+    </div>
+</div>
+
+<main class="admin-main">
+<div class="admin-layout" style="margin:-1.2rem">
+    <aside class="admin-side">
+        <h2><img src="assets/logo.svg" alt="" width="26" height="26" /> پنل مدیریت</h2>
+        <nav>
+            <a class="is-active" href="admin.html">📊 داشبورد</a>
+            <div class="divider"></div>
+            <a href="admin.html">📦 محصولات</a>
+            <a href="admin.html">🗂️ دسته‌بندی‌ها</a>
+            <a href="admin.html">🧾 سفارش‌ها</a>
+            <a href="admin.html">👥 کاربران</a>
+            <a href="admin.html">🏷️ کدهای تخفیف</a>
+            <a href="admin.html">💬 نظرات</a>
+            <a href="admin.html">⚙️ تنظیمات فروشگاه</a>
+            <div class="divider"></div>
+            <a href="index.html">🌐 مشاهده فروشگاه</a>
+        </nav>
+    </aside>
+
+    <div>
+        <div class="admin-topbar">
+            <h1>داشبورد مدیریت</h1>
+            <div class="flex"><span class="muted" style="font-size:.85rem">ابوالفضل ابراهیمی (مدیر)</span><button type="button" class="btn btn--ghost btn--sm">خروج</button></div>
+        </div>
+
+        <div class="stat-grid stat-grid--admin mb-3">
+            <div class="stat stat--admin"><small>فروش کل</small><strong>۱٬۲۴۸٬۵۰۰٬۰۰۰ تومان</strong><small>امروز: ۹۶٬۴۰۰٬۰۰۰ تومان</small></div>
+            <div class="stat stat--admin"><small>سفارش‌ها</small><strong>۳۸۴</strong><small>امروز: ۷ عدد</small></div>
+            <div class="stat stat--admin"><small>در انتظار پردازش</small><strong>۱۲</strong><small>در انتظار پرداخت: ۵</small></div>
+            <div class="stat stat--admin"><small>محصولات</small><strong>۴۰</strong><small>ناموجود: ۲</small></div>
+            <div class="stat stat--admin"><small>مشتریان</small><strong>۱٬۲۷۵</strong><small>جدید این ماه: ۴۸</small></div>
+            <div class="stat stat--admin"><small>نظرات در انتظار تأیید</small><strong>۳</strong><small>کل نظرات: ۱۲۸</small></div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="section__head">
+                <h2 style="font-size:1rem">📈 فروش ۱۴ روز گذشته</h2>
+                <span class="muted" style="font-size:.85rem">میانگین سبد خرید: ۳٬۲۵۰٬۰۰۰ تومان</span>
+            </div>
+            <div class="chart">
+<div class="chart__bar" title="فروش روز"><span style="height:42%"></span><small>۱ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:58%"></span><small>۲ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:35%"></span><small>۳ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:74%"></span><small>۴ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:62%"></span><small>۵ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:88%"></span><small>۶ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:51%"></span><small>۷ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:96%"></span><small>۸ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:70%"></span><small>۹ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:64%"></span><small>۱۰ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:82%"></span><small>۱۱ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:100%"></span><small>۱۲ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:76%"></span><small>۱۳ مهر</small></div>
+<div class="chart__bar" title="فروش روز"><span style="height:90%"></span><small>۱۵ مهر</small></div>
+            </div>
+        </div>
+
+        <div class="grid-2 mb-3">
+            <div class="card">
+                <h3 style="font-size:1rem">🏆 پرفروش‌ترین محصولات</h3>
+                <table class="spec-table">
+                    <tbody>
+                        <tr><td><img src="assets/product-1.svg" width="42" height="42" style="object-fit:contain" alt="" /></td><td>گوشی سامسونگ Galaxy S24 Ultra</td><td>۳۸ فروش</td><td>۲٬۶۵۶٬۲۰۰٬۰۰۰ تومان</td></tr>
+                        <tr><td><img src="assets/product-2.svg" width="42" height="42" style="object-fit:contain" alt="" /></td><td>هدفون سونی WH-1000XM5</td><td>۲۷ فروش</td><td>۶۶۱٬۵۰۰٬۰۰۰ تومان</td></tr>
+                        <tr><td><img src="assets/product-6.svg" width="42" height="42" style="object-fit:contain" alt="" /></td><td>ساعت هوشمند اپل Watch Series 9</td><td>۲۱ فروش</td><td>۶۲۷٬۹۰۰٬۰۰۰ تومان</td></tr>
+                        <tr><td><img src="assets/product-3.svg" width="42" height="42" style="object-fit:contain" alt="" /></td><td>سرخ‌کن بدون روغن فیلیپس</td><td>۱۸ فروش</td><td>۲۵۵٬۶۰۰٬۰۰۰ تومان</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size:1rem">🗂️ فروش بر اساس دسته‌بندی</h3>
+                <table class="spec-table">
+                    <tbody>
+                        <tr><td>موبایل و تبلت</td><td>۸۴ عدد</td><td>۵٬۱۰۰٬۰۰۰٬۰۰۰ تومان</td></tr>
+                        <tr><td>لپ‌تاپ و کامپیوتر</td><td>۳۹ عدد</td><td>۲٬۹۰۰٬۰۰۰٬۰۰۰ تومان</td></tr>
+                        <tr><td>هدفون و صوتی</td><td>۶۱ عدد</td><td>۱٬۱۰۰٬۰۰۰٬۰۰۰ تومان</td></tr>
+                        <tr><td>لوازم خانگی</td><td>۴۵ عدد</td><td>۶۲۰٬۰۰۰٬۰۰۰ تومان</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="section__head"><h3 style="font-size:1rem;margin:0">🧾 آخرین سفارش‌ها</h3><a href="admin.html">همه سفارش‌ها</a></div>
+                <div class="table-wrap">
+                    <table class="data">
+                        <thead><tr><th>شماره</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead>
+                        <tbody>
+                            <tr><td>۱۴۰۵۰۷۱۵-۴۸۲۱</td><td>زهرا محمدی</td><td>۱۰۴٬۸۳۶٬۲۰۰ تومان</td><td><span class="status status--primary">در حال پردازش</span></td></tr>
+                            <tr><td>۱۴۰۵۰۷۱۵-۳۱۹۶</td><td>محمد رضایی</td><td>۲۴٬۵۰۰٬۰۰۰ تومان</td><td><span class="status status--success">تحویل داده شده</span></td></tr>
+                            <tr><td>۱۴۰۵۰۷۱۴-۷۷۰۲</td><td>سارا کریمی</td><td>۱٬۹۸۰٬۰۰۰ تومان</td><td><span class="status status--warning">در انتظار پرداخت</span></td></tr>
+                            <tr><td>۱۴۰۵۰۷۱۴-۲۲۵۸</td><td>علی احمدی</td><td>۳۴٬۹۰۰٬۰۰۰ تومان</td><td><span class="status status--info">ارسال شده</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size:1rem">⚠️ کالاهای کم‌موجود</h3>
+                <table class="spec-table">
+                    <tbody>
+                        <tr><td>لپ‌تاپ اپل MacBook Air M3</td><td><span class="status status--warning">۳ عدد</span></td></tr>
+                        <tr><td>هدفون سونی WH-1000XM5</td><td><span class="status status--warning">۵ عدد</span></td></tr>
+                        <tr><td>مخلوط‌کن و غذا ساز بوش</td><td><span class="status status--warning">۲ عدد</span></td></tr>
+                        <tr><td>ساعت هوشمند اپل Watch Series 9</td><td><span class="status status--danger">ناموجود</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+
+</body>
+</html>

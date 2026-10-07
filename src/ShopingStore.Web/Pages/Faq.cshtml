@@ -1,0 +1,25 @@
+﻿@page "/faq"
+@model ShopingStore.Web.Pages.FaqModel
+@{
+    ViewData["Title"] = "سؤالات متداول";
+}
+<div class="card">
+    <h1 style="font-size:1.3rem">سؤالات متداول</h1>
+
+    <h3 style="font-size:1rem" class="mt-2">چگونه سفارش خود را پیگیری کنم؟</h3>
+    <p class="muted">پس از ورود به حساب کاربری، از بخش «سفارش‌های من» وضعیت و کد رهگیری مرسوله خود را مشاهده کنید.</p>
+
+    <h3 style="font-size:1rem" class="mt-2">هزینه ارسال چقدر است؟</h3>
+    <p class="muted">هزینه ارسال @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Settings.ShippingCost) است و برای سفارش‌های بالای
+        @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Settings.FreeShippingThreshold) رایگان محاسبه می‌شود.</p>
+
+    <h3 style="font-size:1rem" class="mt-2">امکان پرداخت در محل وجود دارد؟</h3>
+    <p class="muted">بله، برای سفارش‌های درون‌شهری امکان پرداخت در محل با کارمزد
+        @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Settings.CashOnDeliveryFee) فراهم است.</p>
+
+    <h3 style="font-size:1rem" class="mt-2">کالای دریافتی مشکل داشت، چه کنم؟</h3>
+    <p class="muted">تا ۷ روز پس از دریافت، از بخش سفارش‌ها درخواست مرجوعی ثبت کنید یا با پشتیبانی تماس بگیرید.</p>
+
+    <h3 style="font-size:1rem" class="mt-2">کد تخفیف را چگونه وارد کنم؟</h3>
+    <p class="muted">در صفحه سبد خرید، بخش «کد تخفیف» کد خود را وارد کرده و روی «اعمال» بزنید.</p>
+</div>

@@ -1,0 +1,97 @@
+﻿@page "/account/addresses"
+@model ShopingStore.Web.Pages.Account.AddressesModel
+@{
+    ViewData["Title"] = "آدرس‌های من";
+}
+
+<div class="account-layout">
+    <partial name="_AccountNav" />
+
+    <div>
+        <div class="card mb-2">
+            <h1 style="font-size:1.1rem">آدرس‌های من</h1>
+
+            @if (Model.Addresses.Count == 0)
+            {
+                <p class="muted">هنوز آدرسی ثبت نکرده‌اید.</p>
+            }
+            else
+            {
+                <div class="grid-2">
+                    @foreach (var address in Model.Addresses)
+                    {
+                        <div class="address-card">
+                            <div class="flex-between">
+                                <strong>@address.Title</strong>
+                                @if (address.IsDefault)
+                                {
+                                    <span class="status status--success">پیش‌فرض</span>
+                                }
+                            </div>
+                            <div class="muted" style="font-size:.85rem">
+                                @address.ReceiverName — @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(address.PhoneNumber)<br />
+                                @address.Province، @address.City، @address.Line — کدپستی @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(address.PostalCode)
+                            </div>
+                            <div class="flex mt-1">
+                                @if (!address.IsDefault)
+                                {
+                                    <form method="post" asp-page-handler="SetDefault">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="addressId" value="@address.Id" />
+                                        <button type="submit" class="btn btn--ghost btn--sm">انتخاب به‌عنوان پیش‌فرض</button>
+                                    </form>
+                                }
+                                <form method="post" asp-page-handler="Delete" data-confirm="این آدرس حذف شود؟">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="addressId" value="@address.Id" />
+                                    <button type="submit" class="btn btn--ghost btn--sm">حذف</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="card">
+            <h2 style="font-size:1rem">افزودن آدرس جدید</h2>
+            <form method="post" asp-page-handler="Save">
+                @Html.AntiForgeryToken()
+                <div class="form-grid">
+                    <div class="form-row">
+                        <label for="Title">عنوان آدرس</label>
+                        <input id="Title" name="title" value="آدرس جدید" required maxlength="100" />
+                    </div>
+                    <div class="form-row">
+                        <label for="ReceiverName">نام گیرنده</label>
+                        <input id="ReceiverName" name="receiverName" required maxlength="150" />
+                    </div>
+                    <div class="form-row">
+                        <label for="PhoneNumber">شماره موبایل</label>
+                        <input id="PhoneNumber" name="phoneNumber" required dir="ltr" maxlength="11" />
+                    </div>
+                    <div class="form-row">
+                        <label for="Province">استان</label>
+                        <input id="Province" name="province" required />
+                    </div>
+                    <div class="form-row">
+                        <label for="City">شهر</label>
+                        <input id="City" name="city" required />
+                    </div>
+                    <div class="form-row">
+                        <label for="PostalCode">کد پستی</label>
+                        <input id="PostalCode" name="postalCode" required maxlength="10" dir="ltr" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="Line">نشانی کامل</label>
+                    <textarea id="Line" name="line" required maxlength="500"></textarea>
+                </div>
+                <label class="checkbox mb-2">
+                    <input type="checkbox" name="isDefault" value="true" /> این آدرس پیش‌فرض من باشد
+                </label>
+                <button type="submit" class="btn btn--primary">ذخیره آدرس</button>
+            </form>
+        </div>
+    </div>
+</div>

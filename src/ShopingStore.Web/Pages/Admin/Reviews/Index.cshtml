@@ -1,0 +1,97 @@
+﻿@page "/admin/reviews"
+@model ShopingStore.Web.Pages.Admin.Reviews.IndexModel
+@{
+    ViewData["Title"] = "مدیریت نظرات";
+}
+
+<div class="card mb-3">
+    <form method="get" class="flex" style="flex-wrap:wrap">
+        <input type="search" name="search" value="@Model.Search" placeholder="جست‌وجو در متن نظر یا نام کاربر..." style="max-width:320px" />
+        <select name="status" style="max-width:200px">
+            <option value="">همه وضعیت‌ها</option>
+            <option value="Pending" selected="@(Model.Status == ReviewStatus.Pending)">در انتظار تأیید</option>
+            <option value="Approved" selected="@(Model.Status == ReviewStatus.Approved)">تأیید شده</option>
+            <option value="Rejected" selected="@(Model.Status == ReviewStatus.Rejected)">رد شده</option>
+        </select>
+        <button type="submit" class="btn btn--primary">فیلتر</button>
+    </form>
+</div>
+
+<div class="table-wrap">
+    <table class="data">
+        <thead>
+        <tr><th>محصول</th><th>نویسنده</th><th>امتیاز</th><th>متن نظر</th><th>تاریخ</th><th>وضعیت</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var review in Model.Reviews.Items)
+        {
+            var statusClass = review.Status switch
+            {
+                ReviewStatus.Approved => "success",
+                ReviewStatus.Rejected => "danger",
+                _ => "warning"
+            };
+
+            var statusTitle = review.Status switch
+            {
+                ReviewStatus.Approved => "تأیید شده",
+                ReviewStatus.Rejected => "رد شده",
+                _ => "در انتظار"
+            };
+
+            <tr>
+                <td><a href="/product/@review.ProductSlug" target="_blank">@review.ProductName</a></td>
+                <td>
+                    @review.AuthorName
+                    @if (review.IsVerifiedPurchase)
+                    {
+                        <span class="verified">✓ خریدار</span>
+                    }
+                </td>
+                <td class="rating">@string.Concat(Enumerable.Repeat("★", review.Rating))</td>
+                <td style="white-space:normal;max-width:340px">
+                    @if (review.Title is not null)
+                    {
+                        <strong>@review.Title</strong><br />
+                    }
+                    @review.Comment
+                </td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToShortPersian(review.CreatedAtUtc)</td>
+                <td><span class="status status--@statusClass">@statusTitle</span></td>
+                <td>
+                    <div class="flex">
+                        @if (review.Status != ReviewStatus.Approved)
+                        {
+                            <form method="post" asp-page-handler="Approve">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@review.Id" />
+                                <button type="submit" class="btn btn--success btn--sm">تأیید</button>
+                            </form>
+                        }
+                        @if (review.Status != ReviewStatus.Rejected)
+                        {
+                            <form method="post" asp-page-handler="Reject">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@review.Id" />
+                                <button type="submit" class="btn btn--ghost btn--sm">رد</button>
+                            </form>
+                        }
+                        <form method="post" asp-page-handler="Delete" data-confirm="این نظر حذف شود؟">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@review.Id" />
+                            <button type="submit" class="btn btn--danger btn--sm">حذف</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.Reviews.Items.Count == 0)
+{
+    <div class="card empty-state mt-3"><h3>نظری یافت نشد</h3></div>
+}
+
+<partial name="_Pagination" model="Model.Pagination" />

@@ -1,0 +1,170 @@
+﻿@page "/admin"
+@model ShopingStore.Web.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "داشبورد مدیریت";
+    var stats = Model.Stats;
+    var maxRevenue = stats.SalesChart.Count == 0 ? 1 : Math.Max(1, stats.SalesChart.Max(p => p.Revenue));
+}
+
+<div class="stat-grid stat-grid--admin mb-3">
+    <div class="stat stat--admin">
+        <small>فروش کل</small>
+        <strong>@ShopingStore.Domain.Common.PersianDate.ToPrice(stats.TotalRevenue)</strong>
+        <small>امروز: @ShopingStore.Domain.Common.PersianDate.ToPrice(stats.TodayRevenue)</small>
+    </div>
+    <div class="stat stat--admin">
+        <small>سفارش‌ها</small>
+        <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.TotalOrders.ToString())</strong>
+        <small>امروز: @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.TodayOrders.ToString()) عدد</small>
+    </div>
+    <div class="stat stat--admin">
+        <small>در انتظار پردازش</small>
+        <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.ProcessingOrders.ToString())</strong>
+        <small>در انتظار پرداخت: @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.PendingOrders.ToString())</small>
+    </div>
+    <div class="stat stat--admin">
+        <small>محصولات</small>
+        <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.TotalProducts.ToString())</strong>
+        <small>ناموجود: @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.OutOfStockProducts.ToString())</small>
+    </div>
+    <div class="stat stat--admin">
+        <small>مشتریان</small>
+        <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.TotalCustomers.ToString())</strong>
+        <small>جدید این ماه: @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.NewCustomersThisMonth.ToString())</small>
+    </div>
+    <div class="stat stat--admin">
+        <small>نظرات در انتظار تأیید</small>
+        <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.PendingReviews.ToString())</strong>
+        <small>کل نظرات: @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.TotalReviews.ToString())</small>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="section__head">
+        <h2 style="font-size:1rem">📈 فروش @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(stats.SalesChart.Count.ToString()) روز گذشته</h2>
+        <span class="muted" style="font-size:.85rem">میانگین سبد خرید: @ShopingStore.Domain.Common.PersianDate.ToPrice((decimal)stats.AverageOrderValue)</span>
+    </div>
+
+    @if (stats.SalesChart.Count == 0)
+    {
+        <p class="muted">داده‌ای برای نمایش وجود ندارد.</p>
+    }
+    else
+    {
+        <div class="chart">
+            @foreach (var point in stats.SalesChart)
+            {
+                var height = Math.Max(2, (int)(point.Revenue / maxRevenue * 100));
+                <div class="chart__bar" title="@ShopingStore.Domain.Common.PersianDate.ToPrice(point.Revenue) - @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(point.OrdersCount.ToString()) سفارش">
+                    <span style="height:@(height)%"></span>
+                    <small>@point.Label</small>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div class="grid-2 mb-3">
+    <div class="card">
+        <h3 style="font-size:1rem">🏆 پرفروش‌ترین محصولات</h3>
+        @if (stats.TopProducts.Count == 0)
+        {
+            <p class="muted">هنوز فروشی ثبت نشده است.</p>
+        }
+        else
+        {
+            <table class="spec-table">
+                <tbody>
+                @foreach (var product in stats.TopProducts)
+                {
+                    <tr>
+                        <td><img src="@product.ImageUrl" alt="@product.Name" width="42" height="42" style="object-fit:contain" /></td>
+                        <td>@product.Name</td>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(product.SoldCount.ToString()) فروش</td>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(product.Revenue)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div class="card">
+        <h3 style="font-size:1rem">🗂️ فروش بر اساس دسته‌بندی</h3>
+        @if (stats.SalesByCategory.Count == 0)
+        {
+            <p class="muted">داده‌ای موجود نیست.</p>
+        }
+        else
+        {
+            <table class="spec-table">
+                <tbody>
+                @foreach (var item in stats.SalesByCategory)
+                {
+                    <tr>
+                        <td>@item.CategoryName</td>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(item.ItemsSold.ToString()) عدد</td>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.Revenue)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="section__head">
+            <h3 style="font-size:1rem;margin:0">🧾 آخرین سفارش‌ها</h3>
+            <a href="/admin/orders">همه سفارش‌ها</a>
+        </div>
+        <div class="table-wrap">
+            <table class="data">
+                <thead><tr><th>شماره</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead>
+                <tbody>
+                @foreach (var order in stats.LatestOrders)
+                {
+                    <tr>
+                        <td><a href="/admin/orders/@order.Id">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.OrderNumber)</a></td>
+                        <td>@order.CustomerName</td>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Total)</td>
+                        <td><span class="status status--@order.Status.ToCssClass()">@order.Status.ToPersianTitle()</span></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="font-size:1rem">⚠️ کالاهای کم‌موجود</h3>
+        @if (stats.LowStockProducts.Count == 0)
+        {
+            <p class="muted">موجودی همه کالاها مناسب است.</p>
+        }
+        else
+        {
+            <table class="spec-table">
+                <tbody>
+                @foreach (var product in stats.LowStockProducts)
+                {
+                    <tr>
+                        <td><a href="/admin/products/edit/@product.ProductId">@product.Name</a></td>
+                        <td>
+                            @if (product.Stock <= 0)
+                            {
+                                <span class="status status--danger">ناموجود</span>
+                            }
+                            else
+                            {
+                                <span class="status status--warning">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(product.Stock.ToString()) عدد</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

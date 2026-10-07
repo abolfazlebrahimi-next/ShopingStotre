@@ -1,0 +1,26 @@
+﻿# ---------------------------------------------------------------------------
+# SQL Server برای اجرای پروژه روی لینوکس/مک کافی است این فایل را اجرا کنید:
+#     docker compose up -d
+# سپس ConnectionString را در appsettings.json به حالت زیر تغییر دهید:
+#     Server=localhost,1433;Database=ShopingStoreDb;User Id=sa;Password=Shop@Store12345;TrustServerCertificate=True;MultipleActiveResultSets=true
+# ---------------------------------------------------------------------------
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: shopingstore-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Shop@Store12345"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -No -Q 'SELECT 1' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mssql-data:

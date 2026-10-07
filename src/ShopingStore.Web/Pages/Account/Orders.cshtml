@@ -1,0 +1,55 @@
+﻿@page "/account/orders"
+@model ShopingStore.Web.Pages.Account.OrdersModel
+@{
+    ViewData["Title"] = "سفارش‌های من";
+}
+
+<div class="account-layout">
+    <partial name="_AccountNav" />
+
+    <div class="card">
+        <h1 style="font-size:1.1rem">سفارش‌های من</h1>
+
+        @if (Model.Orders.Items.Count == 0)
+        {
+            <div class="empty-state">
+                <h3>هنوز سفارشی ثبت نکرده‌اید</h3>
+                <a class="btn btn--primary" href="/products">شروع خرید</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="data">
+                    <thead>
+                    <tr>
+                        <th>شماره سفارش</th>
+                        <th>تاریخ ثبت</th>
+                        <th>تعداد اقلام</th>
+                        <th>مبلغ کل</th>
+                        <th>وضعیت</th>
+                        <th>پرداخت</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var order in Model.Orders.Items)
+                    {
+                        <tr>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.OrderNumber)</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToShortPersian(order.CreatedAtUtc)</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.Items.Count.ToString())</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Total)</td>
+                            <td><span class="status status--@order.Status.ToCssClass()">@order.Status.ToPersianTitle()</span></td>
+                            <td><span class="status status--@(order.PaymentStatus == PaymentStatus.Paid ? "success" : "warning")">@order.PaymentStatus.ToPersianTitle()</span></td>
+                            <td><a class="btn btn--ghost btn--sm" href="/account/orders/@order.Id">جزئیات</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <partial name="_Pagination" model="Model.Pagination" />
+        }
+    </div>
+</div>

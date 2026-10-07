@@ -1,0 +1,78 @@
+﻿@page "/admin/settings"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = "AdminOnly")]
+@model ShopingStore.Web.Pages.Admin.Settings.IndexModel
+@{
+    ViewData["Title"] = "تنظیمات فروشگاه";
+    var s = Model.Settings;
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="grid-2">
+        <div class="admin-form-section">
+            <h3>اطلاعات فروشگاه</h3>
+            <div class="form-row">
+                <label for="SiteName">نام فروشگاه</label>
+                <input id="SiteName" name="Input.SiteName" value="@s.SiteName" required maxlength="150" />
+            </div>
+            <div class="form-row">
+                <label for="SiteSlogan">شعار فروشگاه</label>
+                <input id="SiteSlogan" name="Input.SiteSlogan" value="@s.SiteSlogan" maxlength="250" />
+            </div>
+            <div class="form-row">
+                <label for="SupportPhone">تلفن پشتیبانی</label>
+                <input id="SupportPhone" name="Input.SupportPhone" value="@s.SupportPhone" maxlength="30" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="SupportEmail">ایمیل پشتیبانی</label>
+                <input id="SupportEmail" name="Input.SupportEmail" value="@s.SupportEmail" maxlength="150" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="Address">نشانی فروشگاه</label>
+                <textarea id="Address" name="Input.Address" maxlength="500" style="min-height:80px">@s.Address</textarea>
+            </div>
+            <div class="form-row">
+                <label for="Instagram">اینستاگرام</label>
+                <input id="Instagram" name="Input.Instagram" value="@s.Instagram" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="Telegram">تلگرام</label>
+                <input id="Telegram" name="Input.Telegram" value="@s.Telegram" dir="ltr" />
+            </div>
+        </div>
+
+        <div class="admin-form-section">
+            <h3>تنظیمات فروش و پرداخت</h3>
+            <div class="form-row">
+                <label for="ShippingCost">هزینه ارسال (تومان)</label>
+                <input id="ShippingCost" type="number" name="Input.ShippingCost" value="@s.ShippingCost" step="1000" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="FreeShippingThreshold">حد ارسال رایگان (تومان)</label>
+                <input id="FreeShippingThreshold" type="number" name="Input.FreeShippingThreshold" value="@s.FreeShippingThreshold" step="10000" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="TaxPercent">درصد مالیات بر ارزش افزوده</label>
+                <input id="TaxPercent" type="number" name="Input.TaxPercent" value="@s.TaxPercent" step="0.5" min="0" max="30" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="CashOnDeliveryFee">کارمزد پرداخت در محل (تومان)</label>
+                <input id="CashOnDeliveryFee" type="number" name="Input.CashOnDeliveryFee" value="@s.CashOnDeliveryFee" step="1000" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="BankName">نام بانک</label>
+                <input id="BankName" name="Input.BankName" value="@s.BankName" />
+            </div>
+            <div class="form-row">
+                <label for="CardNumber">شماره کارت</label>
+                <input id="CardNumber" name="Input.CardNumber" value="@s.CardNumber" dir="ltr" />
+            </div>
+            <div class="form-row">
+                <label for="CardOwner">صاحب کارت</label>
+                <input id="CardOwner" name="Input.CardOwner" value="@s.CardOwner" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn--primary">ذخیره تنظیمات</button>
+</form>

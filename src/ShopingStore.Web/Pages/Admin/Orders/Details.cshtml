@@ -1,0 +1,135 @@
+﻿@page "/admin/orders/{id:int}"
+@model ShopingStore.Web.Pages.Admin.Orders.DetailsModel
+@{
+    var order = Model.Order;
+    ViewData["Title"] = $"سفارش {order.OrderNumber}";
+}
+
+<div class="grid-2" style="grid-template-columns: 2fr 1fr; align-items:start">
+    <div>
+        <div class="card mb-3">
+            <div class="flex-between">
+                <div>
+                    <h2 style="font-size:1.05rem;margin:0">سفارش @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.OrderNumber)</h2>
+                    <p class="muted" style="font-size:.83rem;margin:.2rem 0 0">
+                        @ShopingStore.Domain.Common.PersianDate.ToPersianDateTime(order.CreatedAtUtc) —
+                        @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.Items.Count.ToString()) قلم کالا
+                    </p>
+                </div>
+                <span class="status status--@order.Status.ToCssClass()">@order.Status.ToPersianTitle()</span>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <h3 style="font-size:.95rem">اقلام سفارش</h3>
+            <div class="table-wrap">
+                <table class="data">
+                    <thead><tr><th>کالا</th><th>قیمت واحد</th><th>تعداد</th><th>جمع</th></tr></thead>
+                    <tbody>
+                    @foreach (var item in order.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="cart-item">
+                                    <img src="@item.ProductImageUrl" alt="@item.ProductName" />
+                                    <div>
+                                        <a href="/product/@item.ProductSlug" target="_blank">@item.ProductName</a>
+                                        @if (item.VariantSelection is not null)
+                                        {
+                                            <div class="muted" style="font-size:.78rem">@item.VariantSelection</div>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.UnitPrice)</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(item.Quantity.ToString())</td>
+                            <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.LineTotal)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <ul class="summary-list mt-2" style="max-width:420px">
+                <li><span>جمع کالاها</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Subtotal)</span></li>
+                @if (order.DiscountAmount > 0)
+                {
+                    <li><span>تخفیف (@order.DiscountCode)</span><span>- @ShopingStore.Domain.Common.PersianDate.ToPrice(order.DiscountAmount)</span></li>
+                }
+                <li><span>ارسال</span><span>@(order.ShippingCost == 0 ? "رایگان" : ShopingStore.Domain.Common.PersianDate.ToPrice(order.ShippingCost))</span></li>
+                <li><span>مالیات</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.TaxAmount)</span></li>
+                <li class="total"><span>مبلغ کل</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Total)</span></li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size:.95rem">تاریخچه وضعیت</h3>
+            <table class="spec-table">
+                <tbody>
+                @foreach (var history in order.History)
+                {
+                    <tr>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDateTime(history.CreatedAtUtc)</td>
+                        <td><span class="status status--@history.Status.ToCssClass()">@history.Status.ToPersianTitle()</span></td>
+                        <td class="muted">@history.Note @(history.Actor is null ? "" : $"({history.Actor})")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <div class="card mb-3">
+            <h3 style="font-size:.95rem">تغییر وضعیت سفارش</h3>
+            <form method="post" asp-page-handler="Status">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="orderId" value="@order.Id" />
+
+                <div class="form-row">
+                    <label for="Status">وضعیت جدید</label>
+                    <select id="Status" name="status">
+                        @foreach (var status in Enum.GetValues<OrderStatus>())
+                        {
+                            <option value="@status" selected="@(order.Status == status)">@status.ToPersianTitle()</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label for="TrackingCode">کد رهگیری مرسوله</label>
+                    <input id="TrackingCode" name="trackingCode" value="@order.TrackingCode" dir="ltr" />
+                </div>
+
+                <div class="form-row">
+                    <label for="Note">یادداشت</label>
+                    <textarea id="Note" name="note" style="min-height:80px"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--block">ثبت تغییر وضعیت</button>
+            </form>
+        </div>
+
+        <div class="card mb-3">
+            <h3 style="font-size:.95rem">اطلاعات مشتری</h3>
+            <p class="muted" style="font-size:.86rem;margin:0">
+                @order.CustomerName<br />
+                <span dir="ltr">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.CustomerPhone)</span><br />
+                @order.CustomerEmail<br />
+                @order.FullAddress
+            </p>
+            @if (order.UserId is not null)
+            {
+                <a class="btn btn--ghost btn--sm mt-1" href="/admin/users?search=@order.CustomerEmail">مشاهده پروفایل کاربر</a>
+            }
+        </div>
+
+        <div class="card">
+            <h3 style="font-size:.95rem">یادداشت‌ها</h3>
+            <p style="font-size:.86rem"><strong>یادداشت مشتری:</strong> @(string.IsNullOrWhiteSpace(order.CustomerNote) ? "—" : order.CustomerNote)</p>
+            <p style="font-size:.86rem"><strong>یادداشت مدیریت:</strong> @(string.IsNullOrWhiteSpace(order.AdminNote) ? "—" : order.AdminNote)</p>
+            <p style="font-size:.86rem"><strong>شناسه پرداخت:</strong> @(order.PaymentReference ?? "—")</p>
+            <a class="btn btn--ghost btn--sm" href="/admin/orders">بازگشت به لیست سفارش‌ها</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,147 @@
+﻿@inject ISettingsService SettingsService
+@inject ICatalogService CatalogService
+@inject ICartService CartService
+@inject IWishlistService WishlistService
+@inject CartIdentity CartIdentity
+@inject ICurrentUser CurrentUser
+@{
+    var settings = await SettingsService.GetAsync();
+    var cartItemsCount = await CartService.GetItemsCountAsync(CartIdentity.CartKey, CurrentUser.UserId);
+    var favoriteIds = await WishlistService.GetFavoriteIdsAsync(CurrentUser.UserId);
+    var categories = await CatalogService.GetCategoryTreeAsync();
+    var pageTitle = ViewData["Title"] as string;
+    var fullTitle = string.IsNullOrWhiteSpace(pageTitle) ? settings.SiteName : pageTitle + " | " + settings.SiteName;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@fullTitle</title>
+    <meta name="description" content="@(ViewData["Description"] ?? settings.SiteSlogan)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+@Html.AntiForgeryToken()
+<header class="site-header">
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span>🚚 ارسال رایگان برای خریدهای بالای @ShopingStore.Domain.Common.PersianDate.ToPrice(settings.FreeShippingThreshold)</span>
+            <div class="top-bar__links">
+                <a href="/contact">تماس با ما</a>
+                <a href="tel:@settings.SupportPhone">☎ @settings.SupportPhone</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container header-main">
+        <a class="logo" href="/" aria-label="@settings.SiteName">
+            <img src="/img/logo.svg" alt="@settings.SiteName" width="46" height="46" />
+            <span class="logo__text">
+                <strong>@settings.SiteName</strong>
+                <small>@settings.SiteSlogan</small>
+            </span>
+        </a>
+
+        <form class="search-box" action="/products" method="get" role="search">
+            <input type="search" name="search" list="search-suggest" autocomplete="off" placeholder="جست‌وجوی محصول، برند یا دسته‌بندی..." value="@Context.Request.Query["search"]" aria-label="جست‌وجو" />
+            <datalist id="search-suggest"></datalist>
+            <button type="submit" aria-label="جست‌وجو">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M10 2a8 8 0 105.29 14.01l4.35 4.35 1.41-1.41-4.35-4.35A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>
+            </button>
+        </form>
+
+        <div class="header-actions">
+            <a class="header-action" href="/account" title="حساب کاربری">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>
+                <span>@(CurrentUser.IsAuthenticated ? CurrentUser.FullName : "ورود / ثبت‌نام")</span>
+            </a>
+            <a class="header-action" href="/account/favorites" title="علاقه‌مندی‌ها">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.3-9A5.4 5.4 0 0112 5.6 5.4 5.4 0 0121.3 12c-1.8 4.4-9.3 9-9.3 9z"/></svg>
+                <span>علاقه‌مندی</span>
+                @if (favoriteIds.Count > 0)
+                {
+                    <em class="badge-count">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(favoriteIds.Count.ToString())</em>
+                }
+            </a>
+            <a class="header-action header-action--cart" href="/cart" title="سبد خرید">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M7 4h-2l-1 2H2v2h2l3.6 7.59-1.35 2.44A2 2 0 008 21h11v-2H8.42l1.1-2H18a2 2 0 001.8-1.1L22 8H6.21L5.27 6H7zM8 8h11.4l-1.6 5H9.1z"/></svg>
+                <span>سبد خرید</span>
+                <em class="badge-count">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(cartItemsCount.ToString())</em>
+            </a>
+        </div>
+    </div>
+
+    <nav class="main-nav" aria-label="دسته‌بندی‌ها">
+        <div class="container main-nav__inner">
+            <a href="/products">همه محصولات</a>
+            <a href="/products?onlyDiscounted=true">تخفیف‌دارها 🔥</a>
+            @foreach (var category in categories.Take(6))
+            {
+                <a href="/category/@category.Slug">@category.Name</a>
+            }
+        </div>
+    </nav>
+</header>
+
+<main class="container site-main">
+    @if (TempData[ToastService.SuccessKeyName] is string success)
+    {
+        <div class="toast toast--success" role="status">@success</div>
+    }
+    @if (TempData[ToastService.ErrorKeyName] is string error)
+    {
+        <div class="toast toast--error" role="alert">@error</div>
+    }
+    @if (TempData[ToastService.InfoKeyName] is string info)
+    {
+        <div class="toast toast--info" role="status">@info</div>
+    }
+
+    @RenderBody()
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <h3>@settings.SiteName</h3>
+            <p>@settings.SiteSlogan</p>
+            <p>@settings.Address</p>
+            <p>تلفن پشتیبانی: @settings.SupportPhone</p>
+        </div>
+        <div>
+            <h3>دسترسی سریع</h3>
+            <a href="/products">فروشگاه</a>
+            <a href="/account/orders">پیگیری سفارش</a>
+            <a href="/about">درباره ما</a>
+            <a href="/contact">تماس با ما</a>
+        </div>
+        <div>
+            <h3>خدمات مشتریان</h3>
+            <a href="/faq">سؤالات متداول</a>
+            <a href="/about#return">رویه بازگرداندن کالا</a>
+            <a href="/about#shipping">شیوه‌های ارسال</a>
+            <a href="/about#privacy">حریم خصوصی</a>
+        </div>
+        <div>
+            <h3>ما را دنبال کنید</h3>
+            <a href="@settings.Instagram" rel="nofollow noopener" target="_blank">اینستاگرام</a>
+            <a href="@settings.Telegram" rel="nofollow noopener" target="_blank">تلگرام</a>
+            <p class="footer-badges">
+                <span>🔒 پرداخت امن</span>
+                <span>🚚 ارسال سریع</span>
+                <span>↩️ ۷ روز بازگشت</span>
+            </p>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <p>© @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(ShopingStore.Domain.Common.PersianDate.ToPersian(DateTime.UtcNow).Year.ToString()) - تمامی حقوق برای @settings.SiteName محفوظ است.</p>
+    </div>
+</footer>
+
+<script src="/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

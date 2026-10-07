@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="لوازم صوتی">
+  <defs>
+    <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.32"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" rx="28" fill="url(#grad2)"/>
+  <g transform="translate(80, 70) scale(2)">
+    <rect x="14" y="14" width="52" height="32" rx="4" fill="none" stroke="#0ea5e9" stroke-width="3"/><path d="M8 50h64l-4 6H12z" fill="#0ea5e9" opacity=".85"/>
+  </g>
+  <text x="160" y="278" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="20" fill="#0ea5e9" opacity="0.85">لوازم صوتی</text>
+</svg>

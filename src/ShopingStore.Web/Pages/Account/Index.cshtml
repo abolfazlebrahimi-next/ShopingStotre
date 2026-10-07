@@ -1,0 +1,76 @@
+﻿@page "/account"
+@model ShopingStore.Web.Pages.Account.IndexModel
+@{
+    ViewData["Title"] = "حساب کاربری";
+}
+
+<div class="account-layout">
+    <partial name="_AccountNav" />
+
+    <div>
+        <div class="card mb-2">
+            <div class="flex-between">
+                <div>
+                    <h1 style="font-size:1.1rem;margin:0">سلام @Model.Profile?.FullName 👋</h1>
+                    <p class="muted" style="font-size:.85rem;margin:.2rem 0 0">
+                        @Model.Profile?.Email — عضویت از @ShopingStore.Domain.Common.PersianDate.ToPersianDate(Model.Profile?.CreatedAtUtc)
+                    </p>
+                </div>
+                <a class="btn btn--outline btn--sm" href="/account/profile">ویرایش اطلاعات</a>
+            </div>
+        </div>
+
+        <div class="stat-grid mb-2">
+            <div class="stat">
+                <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.Profile?.OrdersCount.ToString() ?? "۰")</strong>
+                <small>تعداد سفارش‌ها</small>
+            </div>
+            <div class="stat">
+                <strong>@ShopingStore.Domain.Common.PersianDate.ToPrice(Model.Profile?.TotalSpent ?? 0)</strong>
+                <small>مجموع خریدها</small>
+            </div>
+            <div class="stat">
+                <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.FavoriteCount.ToString())</strong>
+                <small>کالای مورد علاقه</small>
+            </div>
+            <div class="stat">
+                <strong>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.AddressCount.ToString())</strong>
+                <small>آدرس ثبت‌شده</small>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section__head">
+                <h2 style="font-size:1rem">آخرین سفارش‌ها</h2>
+                <a href="/account/orders">همه سفارش‌ها</a>
+            </div>
+
+            @if (Model.RecentOrders.Count == 0)
+            {
+                <p class="muted">هنوز سفارشی ثبت نکرده‌اید. <a href="/products">شروع خرید</a></p>
+            }
+            else
+            {
+                <div class="table-wrap">
+                    <table class="data">
+                        <thead>
+                        <tr><th>شماره سفارش</th><th>تاریخ</th><th>مبلغ</th><th>وضعیت</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var order in Model.RecentOrders)
+                        {
+                            <tr>
+                                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(order.OrderNumber)</td>
+                                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDate(order.CreatedAtUtc)</td>
+                                <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(order.Total)</td>
+                                <td><span class="status status--@order.Status.ToCssClass()">@order.Status.ToPersianTitle()</span></td>
+                                <td><a class="btn btn--ghost btn--sm" href="/account/orders/@order.Id">جزئیات</a></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

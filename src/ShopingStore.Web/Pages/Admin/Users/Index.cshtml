@@ -1,0 +1,82 @@
+﻿@page "/admin/users"
+@model ShopingStore.Web.Pages.Admin.Users.IndexModel
+@{
+    ViewData["Title"] = "مدیریت کاربران";
+}
+
+<div class="card mb-3">
+    <form method="get" class="flex" style="flex-wrap:wrap">
+        <input type="search" name="search" value="@Model.Filter.Search" placeholder="نام، ایمیل یا تلفن..." style="max-width:300px" />
+        <select name="role" style="max-width:180px">
+            <option value="">همه نقش‌ها</option>
+            @foreach (var role in Enum.GetValues<UserRole>())
+            {
+                <option value="@role" selected="@(Model.Filter.Role == role)">@role.ToPersianTitle()</option>
+            }
+        </select>
+        <select name="isActive" style="max-width:160px">
+            <option value="">همه وضعیت‌ها</option>
+            <option value="true" selected="@(Model.Filter.IsActive == true)">فعال</option>
+            <option value="false" selected="@(Model.Filter.IsActive == false)">غیرفعال</option>
+        </select>
+        <button type="submit" class="btn btn--primary">جست‌وجو</button>
+    </form>
+</div>
+
+<div class="table-wrap">
+    <table class="data">
+        <thead>
+        <tr><th>#</th><th>نام</th><th>ایمیل</th><th>تلفن</th><th>نقش</th><th>تعداد سفارش</th><th>مجموع خرید</th><th>وضعیت</th><th>تاریخ عضویت</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model.Users.Items)
+        {
+            <tr>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(user.Id.ToString())</td>
+                <td>@user.FullName</td>
+                <td dir="ltr">@user.Email</td>
+                <td dir="ltr">@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(user.PhoneNumber ?? "—")</td>
+                <td><span class="status status--@(user.Role == UserRole.Admin ? "primary" : "secondary")">@user.Role.ToPersianTitle()</span></td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(user.OrdersCount.ToString())</td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(user.TotalSpent)</td>
+                <td>
+                    @if (user.IsActive)
+                    {
+                        <span class="status status--success">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="status status--danger">غیرفعال</span>
+                    }
+                </td>
+                <td>@ShopingStore.Domain.Common.PersianDate.ToShortPersian(user.CreatedAtUtc)</td>
+                <td>
+                    <div class="flex">
+                        <form method="post" asp-page-handler="Toggle" data-confirm="وضعیت این کاربر تغییر کند؟">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn--ghost btn--sm">فعال/غیرفعال</button>
+                        </form>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form method="post" asp-page-handler="Role">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <select name="role" onchange="this.form.submit()">
+                                    @foreach (var role in Enum.GetValues<UserRole>())
+                                    {
+                                        <option value="@role" selected="@(user.Role == role)">@role.ToPersianTitle()</option>
+                                    }
+                                </select>
+                            </form>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<partial name="_Pagination" model="Model.Pagination" />

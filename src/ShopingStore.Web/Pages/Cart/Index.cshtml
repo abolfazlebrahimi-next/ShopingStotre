@@ -1,0 +1,133 @@
+﻿@page "/cart"
+@model ShopingStore.Web.Pages.Cart.IndexModel
+@{
+    ViewData["Title"] = "سبد خرید";
+    var cart = Model.Cart;
+}
+
+<div class="steps">
+    <span class="is-active">۱. سبد خرید</span>
+    <span>۲. اطلاعات پرداخت</span>
+    <span>۳. پرداخت</span>
+</div>
+
+<h1 style="font-size:1.3rem">سبد خرید شما</h1>
+
+@if (cart.IsEmpty)
+{
+    <div class="card empty-state">
+        <h3>سبد خرید شما خالی است</h3>
+        <p>می‌توانید از میان بیش از هزاران کالای موجود، محصول مورد نظر خود را انتخاب کنید.</p>
+        <a class="btn btn--primary" href="/products">شروع خرید</a>
+    </div>
+}
+else
+{
+    <div class="grid-2" style="grid-template-columns: 2fr 1fr; align-items:start">
+        <div class="table-wrap">
+            <table class="cart-table">
+                <thead>
+                <tr>
+                    <th>کالا</th>
+                    <th>قیمت واحد</th>
+                    <th>تعداد</th>
+                    <th>جمع</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in cart.Items)
+                {
+                    <tr>
+                        <td>
+                            <div class="cart-item">
+                                <img src="@item.ImageUrl" alt="@item.ProductName" />
+                                <div>
+                                    <a href="/product/@item.ProductSlug"><strong>@item.ProductName</strong></a>
+                                    @if (item.VariantSelection is not null)
+                                    {
+                                        <div class="muted" style="font-size:.78rem">@item.VariantSelection</div>
+                                    }
+                                    @if (item.Stock <= 5)
+                                    {
+                                        <div class="stock-pill" style="font-size:.75rem">تنها @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(item.Stock.ToString()) عدد در انبار</div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.UnitPrice)</td>
+                        <td>
+                            <form method="post" asp-page-handler="Update" data-cart-qty>
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <div class="qty">
+                                    <button type="submit" name="quantity" value="@(item.Quantity - 1)" aria-label="کاهش">−</button>
+                                    <span>@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(item.Quantity.ToString())</span>
+                                    <button type="submit" name="quantity" value="@(item.Quantity + 1)" aria-label="افزایش">+</button>
+                                </div>
+                            </form>
+                        </td>
+                        <td><strong>@ShopingStore.Domain.Common.PersianDate.ToPrice(item.LineTotal)</strong></td>
+                        <td>
+                            <form method="post" asp-page-handler="Remove">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <button type="submit" class="btn btn--ghost btn--sm" title="حذف از سبد">🗑️</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size:1rem">خلاصه سفارش</h3>
+
+            <form method="post" asp-page-handler="ApplyDiscount" class="mb-2">
+                @Html.AntiForgeryToken()
+                <div class="form-row">
+                    <label for="code">کد تخفیف</label>
+                    <div class="flex">
+                        <input id="code" name="code" placeholder="مثلاً OFF10" value="@cart.DiscountCode" />
+                        <button type="submit" class="btn btn--outline">اعمال</button>
+                    </div>
+                </div>
+            </form>
+
+            @if (cart.DiscountCode is not null)
+            {
+                <form method="post" asp-page-handler="RemoveDiscount" class="mb-2">
+                    @Html.AntiForgeryToken()
+                    <div class="toast toast--success" style="margin:0">
+                        کد «@cart.DiscountCode» فعال است.
+                        <button type="submit" class="btn btn--ghost btn--sm" style="margin-inline-start:.5rem">حذف کد</button>
+                    </div>
+                </form>
+            }
+
+            <ul class="summary-list">
+                <li><span>جمع کالاها (@ShopingStore.Domain.Common.PersianDate.ToPersianDigits(cart.TotalQuantity.ToString()) عدد)</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.Subtotal)</span></li>
+                @if (cart.DiscountAmount > 0)
+                {
+                    <li><span>تخفیف</span><span style="color:var(--danger)">- @ShopingStore.Domain.Common.PersianDate.ToPrice(cart.DiscountAmount)</span></li>
+                }
+                <li><span>هزینه ارسال</span><span>@(cart.ShippingCost == 0 ? "رایگان" : ShopingStore.Domain.Common.PersianDate.ToPrice(cart.ShippingCost))</span></li>
+                <li><span>مالیات بر ارزش افزوده</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.TaxAmount)</span></li>
+                <li class="total"><span>مبلغ قابل پرداخت</span><span>@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.Total)</span></li>
+            </ul>
+
+            @if (cart.FreeShippingRemaining > 0)
+            {
+                <p class="hint mt-1">@ShopingStore.Domain.Common.PersianDate.ToPrice(cart.FreeShippingRemaining) تا ارسال رایگان باقی مانده است.</p>
+            }
+
+            <a class="btn btn--primary btn--block mt-2" href="/checkout">ادامه فرآیند خرید</a>
+
+            <form method="post" asp-page-handler="Clear" class="mt-1">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn--ghost btn--block">خالی کردن سبد خرید</button>
+            </form>
+        </div>
+    </div>
+}

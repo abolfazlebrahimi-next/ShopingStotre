@@ -1,0 +1,132 @@
+﻿@page "/products"
+@page "/category/{category}"
+@model ShopingStore.Web.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = Model.SelectedCategoryName is null ? "فروشگاه" : Model.SelectedCategoryName;
+}
+
+<nav class="breadcrumb">
+    <a href="/">خانه</a>
+    <span>/</span>
+    <a href="/products">فروشگاه</a>
+    @if (Model.SelectedCategoryName is not null)
+    {
+        <span>/</span>
+        <span>@Model.SelectedCategoryName</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Query.Search))
+    {
+        <span>/</span>
+        <span>جست‌وجوی «@Model.Query.Search»</span>
+    }
+</nav>
+
+<div class="shop-layout">
+    <aside class="card filters">
+        <form method="get" action="/products">
+            <div class="group">
+                <h3>جست‌وجو</h3>
+                <input type="search" name="search" value="@Model.Query.Search" placeholder="نام محصول..." />
+            </div>
+
+            <div class="group">
+                <h3>دسته‌بندی</h3>
+                <select name="category">
+                    <option value="">همه دسته‌ها</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <optgroup label="@category.Name">
+                            <option value="@category.Slug" selected="@(Model.Query.Category == category.Slug)">@category.Name</option>
+                            @foreach (var child in category.Children)
+                            {
+                                <option value="@child.Slug" selected="@(Model.Query.Category == child.Slug)">— @child.Name</option>
+                            }
+                        </optgroup>
+                    }
+                </select>
+            </div>
+
+            <div class="group">
+                <h3>محدوده قیمت (تومان)</h3>
+                <div class="form-grid">
+                    <input type="number" name="minPrice" min="0" step="10000" placeholder="از" value="@Model.Query.MinPrice" />
+                    <input type="number" name="maxPrice" min="0" step="10000" placeholder="تا" value="@Model.Query.MaxPrice" />
+                </div>
+                <small class="hint">بازه موجود: @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.PriceRange.Min, null) تا @ShopingStore.Domain.Common.PersianDate.ToPrice(Model.PriceRange.Max)</small>
+            </div>
+
+            <div class="group">
+                <h3>برند</h3>
+                <select name="brand">
+                    <option value="">همه برندها</option>
+                    @foreach (var brand in Model.Brands)
+                    {
+                        <option value="@brand" selected="@(Model.Query.Brand == brand)">@brand</option>
+                    }
+                </select>
+            </div>
+
+            <div class="group">
+                <h3>ویژگی‌ها</h3>
+                <label class="checkbox"><input type="checkbox" name="onlyAvailable" value="true" checked="@Model.Query.OnlyAvailable" /> فقط کالاهای موجود</label>
+                <label class="checkbox"><input type="checkbox" name="onlyDiscounted" value="true" checked="@Model.Query.OnlyDiscounted" /> فقط کالاهای تخفیف‌دار</label>
+            </div>
+
+            <input type="hidden" name="sortBy" value="@Model.Query.SortBy" />
+            <button type="submit" class="btn btn--primary btn--block">اعمال فیلتر</button>
+            <a href="/products" class="btn btn--ghost btn--block mt-1">حذف فیلترها</a>
+        </form>
+    </aside>
+
+    <div>
+        <div class="toolbar">
+            <span class="muted">
+                @ShopingStore.Domain.Common.PersianDate.ToPersianDigits(Model.Products.TotalCount.ToString()) کالا یافت شد
+            </span>
+            <form method="get" action="/products" class="flex">
+                <input type="hidden" name="search" value="@Model.Query.Search" />
+                <input type="hidden" name="category" value="@Model.Query.Category" />
+                <input type="hidden" name="brand" value="@Model.Query.Brand" />
+                <input type="hidden" name="minPrice" value="@Model.Query.MinPrice" />
+                <input type="hidden" name="maxPrice" value="@Model.Query.MaxPrice" />
+                @if (Model.Query.OnlyAvailable)
+                {
+                    <input type="hidden" name="onlyAvailable" value="true" />
+                }
+                @if (Model.Query.OnlyDiscounted)
+                {
+                    <input type="hidden" name="onlyDiscounted" value="true" />
+                }
+                <label for="sortBy" class="muted">ترتیب:</label>
+                <select id="sortBy" name="sortBy" onchange="this.form.submit()">
+                    <option value="Newest" selected="@(Model.Query.SortBy == ProductSortBy.Newest)">جدیدترین</option>
+                    <option value="Cheapest" selected="@(Model.Query.SortBy == ProductSortBy.Cheapest)">ارزان‌ترین</option>
+                    <option value="MostExpensive" selected="@(Model.Query.SortBy == ProductSortBy.MostExpensive)">گران‌ترین</option>
+                    <option value="BestSelling" selected="@(Model.Query.SortBy == ProductSortBy.BestSelling)">پرفروش‌ترین</option>
+                    <option value="TopRated" selected="@(Model.Query.SortBy == ProductSortBy.TopRated)">بیشترین امتیاز</option>
+                    <option value="MostDiscounted" selected="@(Model.Query.SortBy == ProductSortBy.MostDiscounted)">بیشترین تخفیف</option>
+                </select>
+            </form>
+        </div>
+
+        @if (Model.Products.Items.Count == 0)
+        {
+            <div class="card empty-state">
+                <h3>محصولی یافت نشد</h3>
+                <p>فیلترهای انتخابی نتیجه‌ای نداشت. لطفاً شرایط جست‌وجو را تغییر دهید.</p>
+                <a class="btn btn--primary" href="/products">مشاهده همه محصولات</a>
+            </div>
+        }
+        else
+        {
+            <div class="product-grid">
+                @foreach (var product in Model.Products.Items)
+                {
+                    <partial name="_ProductCard" model="product" />
+                }
+            </div>
+
+            <partial name="_Pagination" model="Model.Pagination" />
+        }
+    </div>
+</div>

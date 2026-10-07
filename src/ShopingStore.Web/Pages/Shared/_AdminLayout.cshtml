@@ -1,0 +1,74 @@
+﻿@inject ISettingsService SettingsService
+@inject ICurrentUser CurrentUser
+@{
+    var settings = await SettingsService.GetAsync();
+    var current = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    string Active(string prefix) => current.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) ? "is-active" : string.Empty;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] | پنل مدیریت @settings.SiteName</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+@Html.AntiForgeryToken()
+<div class="admin-layout">
+    <aside class="admin-side">
+        <h2><img src="/img/logo.svg" alt="" width="26" height="26" /> پنل مدیریت</h2>
+        <nav>
+            <a class="@Active("/Admin/Index")" href="/admin">📊 داشبورد</a>
+            <div class="divider"></div>
+            <a class="@Active("/Admin/Products")" href="/admin/products">📦 محصولات</a>
+            <a class="@Active("/Admin/Categories")" href="/admin/categories">🗂️ دسته‌بندی‌ها</a>
+            <a class="@Active("/Admin/Orders")" href="/admin/orders">🧾 سفارش‌ها</a>
+            <a class="@Active("/Admin/Users")" href="/admin/users">👥 کاربران</a>
+            <a class="@Active("/Admin/Discounts")" href="/admin/discounts">🏷️ کدهای تخفیف</a>
+            <a class="@Active("/Admin/Reviews")" href="/admin/reviews">💬 نظرات</a>
+            @if (CurrentUser.IsAdmin)
+            {
+                <a class="@Active("/Admin/Settings")" href="/admin/settings">⚙️ تنظیمات فروشگاه</a>
+            }
+            <div class="divider"></div>
+            <a href="/" target="_blank">🌐 مشاهده فروشگاه</a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <h1>@(ViewData["Title"] ?? "داشبورد")</h1>
+            <div class="flex">
+                <span class="muted" style="font-size:.85rem">
+                    @CurrentUser.FullName (@(CurrentUser.IsAdmin ? "مدیر" : "پشتیبان"))
+                </span>
+                <form method="post" action="/account/logout">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn--ghost btn--sm">خروج</button>
+                </form>
+            </div>
+        </div>
+
+        @if (TempData[ToastService.SuccessKeyName] is string success)
+        {
+            <div class="toast toast--success">@success</div>
+        }
+        @if (TempData[ToastService.ErrorKeyName] is string error)
+        {
+            <div class="toast toast--error">@error</div>
+        }
+        @if (TempData[ToastService.InfoKeyName] is string info)
+        {
+            <div class="toast toast--info">@info</div>
+        }
+
+        @RenderBody()
+    </main>
+</div>
+<script src="/js/admin.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>سبد خرید | شاپینگ‌استور</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+    <link rel="stylesheet" href="../src/ShopingStore.Web/wwwroot/css/site.css" />
+    <link rel="stylesheet" href="preview.css" />
+    <link rel="stylesheet" href="../src/ShopingStore.Web/wwwroot/css/admin.css" />
+
+</head>
+<body class="">
+<div class="preview-bar">
+    <div class="container preview-bar__inner">
+        <span>🎨 <strong>پیش‌نمایش استاتیک طراحی</strong> <small>— نسخه واقعی با ASP.NET Core 10 (Razor Pages) اجرا می‌شود</small></span>
+        <nav>
+            <a href="index.html" class="">صفحه اصلی</a>
+            <a href="product.html" class="">جزئیات محصول</a>
+            <a href="cart.html" class="is-active">سبد خرید</a>
+            <a href="checkout.html" class="">پرداخت</a>
+            <a href="admin.html" class="">پنل مدیریت</a>
+        </nav>
+    </div>
+</div>
+<header class="site-header">
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span>🚚 ارسال رایگان برای خریدهای بالای ۲٬۰۰۰٬۰۰۰ تومان</span>
+            <div class="top-bar__links"><a href="index.html">تماس با ما</a><a href="#">☎ ۰۲۱-۹۱۰۰۰۰۰۰</a></div>
+        </div>
+    </div>
+    <div class="container header-main">
+        <a class="logo" href="index.html">
+            <img src="assets/logo.svg" alt="شاپینگ‌استور" width="46" height="46" />
+            <span class="logo__text"><strong>فروشگاه آنلاین شاپینگ‌استور</strong><small>خرید آسان، ارسال سریع</small></span>
+        </a>
+        <form class="search-box" onsubmit="return false">
+            <input type="search" placeholder="جست‌وجوی محصول، برند یا دسته‌بندی..." aria-label="جست‌وجو" />
+            <button type="button" aria-label="جست‌وجو"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M10 2a8 8 0 105.29 14.01l4.35 4.35 1.41-1.41-4.35-4.35A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg></button>
+        </form>
+        <div class="header-actions">
+            <a class="header-action" href="#"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg><span>زهرا محمدی</span></a>
+            <a class="header-action" href="#"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 21s-7.5-4.6-9.3-9A5.4 5.4 0 0112 5.6 5.4 5.4 0 0121.3 12c-1.8 4.4-9.3 9-9.3 9z"/></svg><span>علاقه‌مندی</span><em class="badge-count">۳</em></a>
+            <a class="header-action header-action--cart" href="cart.html"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M7 4h-2l-1 2H2v2h2l3.6 7.59-1.35 2.44A2 2 0 008 21h11v-2H8.42l1.1-2H18a2 2 0 001.8-1.1L22 8H6.21L5.27 6H7zM8 8h11.4l-1.6 5H9.1z"/></svg><span>سبد خرید</span><em class="badge-count">۴</em></a>
+        </div>
+    </div>
+    <nav class="main-nav">
+        <div class="container main-nav__inner">
+            <a href="index.html">همه محصولات</a><a href="index.html">تخفیف‌دارها 🔥</a>
+            <a href="index.html">موبایل و تبلت</a><a href="index.html">لپ‌تاپ و کامپیوتر</a>
+            <a href="index.html">هدفون و صوتی</a><a href="index.html">ساعت و مچ‌بند هوشمند</a>
+            <a href="index.html">لوازم خانگی</a><a href="index.html">مد و پوشاک</a>
+        </div>
+    </nav>
+</header>
+<main class="container site-main">
+<div class="steps"><span class="is-active">۱. سبد خرید</span><span>۲. اطلاعات پرداخت</span><span>۳. پرداخت</span></div>
+<h1 style="font-size:1.3rem">سبد خرید شما</h1>
+
+<div class="grid-2" style="grid-template-columns: 2fr 1fr; align-items:start">
+    <div class="table-wrap">
+        <table class="cart-table">
+            <thead><tr><th>کالا</th><th>قیمت واحد</th><th>تعداد</th><th>جمع</th><th></th></tr></thead>
+            <tbody>
+<tr>
+    <td><div class="cart-item">
+        <img src="assets/product-1.svg" alt="" />
+        <div><a href="product.html"><strong>گوشی موبایل سامسونگ مدل Galaxy S24 Ultra ظرفیت ۲۵۶ گیگابایت</strong></a><div class="muted" style="font-size:.78rem">رنگ: تیتانیوم خاکستری</div></div>
+    </div></td>
+    <td>۶۹٬۹۰۰٬۰۰۰ تومان</td>
+    <td><div class="qty"><button type="button">−</button><span>۱</span><button type="button">+</button></div></td>
+    <td><strong>۶۹٬۹۰۰٬۰۰۰ تومان</strong></td>
+    <td><button type="button" class="btn btn--ghost btn--sm">🗑️</button></td>
+</tr>
+<tr>
+    <td><div class="cart-item">
+        <img src="assets/product-2.svg" alt="" />
+        <div><a href="product.html"><strong>هدفون بی‌سیم سونی مدل WH-1000XM5 نویز کنسلینگ</strong></a><div class="muted" style="font-size:.78rem">رنگ: مشکی</div></div>
+    </div></td>
+    <td>۲۴٬۵۰۰٬۰۰۰ تومان</td>
+    <td><div class="qty"><button type="button">−</button><span>۱</span><button type="button">+</button></div></td>
+    <td><strong>۲۴٬۵۰۰٬۰۰۰ تومان</strong></td>
+    <td><button type="button" class="btn btn--ghost btn--sm">🗑️</button></td>
+</tr>
+<tr>
+    <td><div class="cart-item">
+        <img src="assets/product-5.svg" alt="" />
+        <div><a href="product.html"><strong>سرم ویتامین C روشن‌کننده ۳۰ میلی‌لیتر</strong></a></div>
+    </div></td>
+    <td>۹۹۰٬۰۰۰ تومان</td>
+    <td><div class="qty"><button type="button">−</button><span>۲</span><button type="button">+</button></div></td>
+    <td><strong>۱٬۹۸۰٬۰۰۰ تومان</strong></td>
+    <td><button type="button" class="btn btn--ghost btn--sm">🗑️</button></td>
+</tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3 style="font-size:1rem">خلاصه سفارش</h3>
+
+        <div class="form-row">
+            <label for="code">کد تخفیف</label>
+            <div class="flex"><input id="code" value="OFF10" /><button type="button" class="btn btn--outline">اعمال</button></div>
+        </div>
+
+        <div class="toast toast--success" style="margin:0">کد «OFF10» فعال است.</div>
+
+        <ul class="summary-list">
+            <li><span>جمع کالاها (۴ عدد)</span><span>۹۶٬۳۸۰٬۰۰۰ تومان</span></li>
+            <li><span>تخفیف</span><span style="color:var(--danger)">- ۲۰۰٬۰۰۰ تومان</span></li>
+            <li><span>هزینه ارسال</span><span>رایگان</span></li>
+            <li><span>مالیات بر ارزش افزوده</span><span>۸٬۶۵۶٬۲۰۰ تومان</span></li>
+            <li class="total"><span>مبلغ قابل پرداخت</span><span>۱۰۴٬۸۳۶٬۲۰۰ تومان</span></li>
+        </ul>
+
+        <p class="hint mt-1">۱۸٬۰۰۰٬۰۰۰ تومان تا ارسال رایگان باقی مانده است.</p>
+        <a class="btn btn--primary btn--block mt-2" href="checkout.html">ادامه فرآیند خرید</a>
+        <button type="button" class="btn btn--ghost btn--block mt-1">خالی کردن سبد خرید</button>
+    </div>
+</div>
+
+</main>
+<footer class="site-footer mt-4">
+    <div class="container footer-grid">
+        <div>
+            <h3>فروشگاه آنلاین شاپینگ‌استور</h3>
+            <p>خرید آسان، ارسال سریع</p>
+            <p>تهران، خیابان ولیعصر، پلاک ۱۲۳</p>
+            <p>تلفن پشتیبانی: ۰۲۱-۹۱۰۰۰۰۰۰</p>
+        </div>
+        <div><h3>دسترسی سریع</h3><a href="index.html">فروشگاه</a><a href="cart.html">سبد خرید</a><a href="checkout.html">پرداخت</a><a href="#">پیگیری سفارش</a></div>
+        <div><h3>خدمات مشتریان</h3><a href="#">سؤالات متداول</a><a href="#">رویه بازگرداندن کالا</a><a href="#">شیوه‌های ارسال</a><a href="#">حریم خصوصی</a></div>
+        <div>
+            <h3>ما را دنبال کنید</h3><a href="#">اینستاگرام</a><a href="#">تلگرام</a>
+            <p class="footer-badges"><span>🔒 پرداخت امن</span><span>🚚 ارسال سریع</span><span>↩️ ۷ روز بازگشت</span></p>
+        </div>
+    </div>
+    <div class="container footer-bottom"><p>© ۱۴۰۵ - تمامی حقوق برای فروشگاه آنلاین شاپینگ‌استور محفوظ است.</p></div>
+</footer>
+
+</body>
+</html>
