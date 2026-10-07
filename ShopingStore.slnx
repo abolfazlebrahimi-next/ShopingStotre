@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/ShopingStore.Domain/ShopingStore.Domain.csproj" />
+  <Project Path="src/ShopingStore.Infrastructure/ShopingStore.Infrastructure.csproj" />
+  <Project Path="src/ShopingStore.Web/ShopingStore.Web.csproj" />
+</Solution>

@@ -82,7 +82,10 @@ ShopingStore.sln
 │       └── wwwroot/                    # css، js، فونت وزیرمتن، تصاویر SVG
 │
 ├── preview/                            # پیش‌نمایش استاتیک طراحی (HTML/CSS) برای مشاهده سریع ظاهر سایت
+├── tools/                              # اسکریپت‌های تشخیصی محیط (check-environment.ps1 / .sh)
 ├── docker-compose.yml                  # راه‌اندازی سریع SQL Server
+├── global.json                         # میخ‌کوب‌کردن نسخه SDK دات‌نت ۱۰
+├── ShopingStore.slnx                   # سولوشن جایگزین (VS 2026 / dotnet 10)
 ├── .editorconfig                       # یکسان‌سازی سبک کد و کدگذاری UTF-8 (BOM)
 └── README.md
 ```
@@ -186,6 +189,26 @@ Update-Database -Project ShopingStore.Infrastructure -StartupProject ShopingStor
 
 > اگر مایگریشنی نسازید هم مشکلی نیست؛ در اولین اجرا دیتابیس از روی مدل ساخته و
 > داده‌های نمونه درج می‌شود. فقط باید دیتابیس در دسترس باشد.
+
+### اگر پروژه در ویژوال استودیو باز یا اجرا نمی‌شود
+ابتدا این اسکریپت تشخیصی را اجرا کنید تا وضعیت پیش‌نیازها را ببینید (SDK، نسخه VS، بارهای کاری، دیتابیس):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\check-environment.ps1
+```
+
+سپس بر اساس نشانه‌ای که می‌بینید:
+
+| نشانه | علت | راه‌حل |
+|---|---|---|
+| پروژه‌ها با برچسب **«(بارگذاری نشده)»** یا خطای `NETSDK1045` | نبودن **.NET 10 SDK** یا نسخه قدیمی ویژوال استودیو | نصب SDK 10.0.x + VS 2026 (نسخه ۱۸.x). فایل `global.json` نسخه SDK را می‌خ‌کوب می‌کند و اگر نصب نباشد پیام شفاف می‌دهد |
+| «The project file cannot be opened» | بار کاری **ASP.NET and web development** نصب نیست | Visual Studio Installer → Modify → Workloads → ASP.NET and web development |
+| دکمه Run غیرفعال است / Startup Project انتخاب نمی‌شود | پوشه به‌جای سولوشن باز شده یا پروژه Web انتخاب نشده | فایل `ShopingStore.sln` را باز کنید؛ اگر باز نشد **`ShopingStore.slnx`** را امتحان کنید |
+| سولوشن باز می‌شود ولی F5 کاری نمی‌کند | فایل `launchSettings.json` قدیمی در `.vs` | پوشه مخفی `.vs` را کنار سولوشن پاک کنید و دوباره باز کنید |
+| خطای Restore/NuGet | نبود دسترسی به nuget.org یا فایل‌های `obj` قدیمی | حذف پوشه‌های `bin` و `obj` و سپس Restore NuGet Packages |
+
+> اگر مجبورید روی ویژوال استودیو ۲۰۲۲ بمانید: آن نسخه از .NET 10 پشتیبانی نمی‌کند؛ در این حالت
+> پروژه را از خط فرمان (`dotnet run --project src/ShopingStore.Web`) اجرا کنید.
 
 ### ترفندهای ویژه ویژوال استودیو
 - **بدون دست‌زدن به فایل‌های اصلی:** فایل `appsettings.Local.json.example` را به
@@ -291,8 +314,13 @@ services.AddSingleton<IPaymentGateway, ZarinPalGateway>();
 
 **پروژه در ویژوال استودیو باز نمی‌شود / صفحه‌ها نمی‌آید**
 باید `ShopingStore.sln` (و نه پوشه پروژه) باز شود و پروژه `ShopingStore.Web` به‌عنوان
-Startup Project انتخاب شود. همچنین مطمئن شوید NuGet Restore کامل انجام شده است (بسته‌های
-`Microsoft.EntityFrameworkCore.*` نسخه 10.0.0 باید دانلود شوند).
+Startup Project انتخاب شود. اگر سولوشن اصلی باز نشد، فایل جایگزین `ShopingStore.slnx` را امتحان کنید.
+همچنین مطمئن شوید NuGet Restore کامل انجام شده است (بسته‌های `Microsoft.EntityFrameworkCore.*`
+نسخه 10.0.0 باید دانلود شوند) و برای دیدن وضعیت همه پیش‌نیازها این را اجرا کنید:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\check-environment.ps1
+```
 
 **برنامه اجرا می‌شود ولی همه صفحه‌ها خطا می‌دهند**
 یعنی دیتابیس در دسترس نیست. خروجی کنسول پیام «امکان اتصال به دیتابیس وجود ندارد» را نشان می‌دهد.

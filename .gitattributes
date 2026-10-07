@@ -1,6 +1,7 @@
-# نرمال‌سازی خط‌پایان‌ها؛ در ویندوز به‌صورت خودکار CRLF و در لینوکس LF
+﻿# نرمال‌سازی خط‌پایان‌ها؛ در ویندوز به‌صورت خودکار CRLF و در لینوکس LF
 * text=auto
 
+*.sh       text eol=lf
 *.sln      text eol=crlf
 *.csproj   text eol=crlf
 *.props    text eol=crlf
